@@ -2,15 +2,15 @@
 
 ### Members & Roles
 
-Cariza: UI, UX and Game Designer
+Cariza Shine Sta Maria: UI, UX and Game Designer
 
-Deeni: UI, UX and Sound Designer
+Deeni Baez Flores: UI, UX and Sound Designer
 
-Lachlan: Lead Game Developer
+Lachlan Carlsen: Lead Game Developer
 
-Joseph: Game Developer with Emphasis on Mobile Development Implementation
+Joseph Dela Cruz: Game Developer with Emphasis on Mobile Development Implementation
 
-Darren: Game Developer with Emphasis on Generative AI
+Darren Nguyen: Game Developer with Emphasis on Generative AI
 
 *Roles are tentative and flexible throughout development.
 
