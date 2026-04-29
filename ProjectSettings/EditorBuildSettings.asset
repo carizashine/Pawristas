@@ -8,6 +8,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Cafe.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/EspressoMinigame.unity
+    guid: f9ba63bfbf74fe6499ca89b9d93973eb
+  - enabled: 1
+    path: Assets/Scenes/SyrupMinigame.unity
+    guid: 36a7a4c2e15c9374dae174a18efe25e2
+  - enabled: 1
+    path: Assets/Scenes/TakingOrder.unity
+    guid: e465eb99a7959364b87b4b6ac9ca4e5c
+  - enabled: 1
+    path: Assets/Scenes/PastryMinigame.unity
+    guid: 1c941cf9e8799e64ab30525251eeac32
+  - enabled: 1
+    path: Assets/Scenes/DrinkRating.unity
+    guid: 552fab23472f3434ea55ce95c4576c4c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
