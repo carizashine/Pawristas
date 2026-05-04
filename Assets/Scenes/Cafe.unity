@@ -2584,6 +2584,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 401681540}
+  - component: {fileID: 401681542}
+  - component: {fileID: 401681541}
   m_Layer: 0
   m_Name: Stack_Of_Lids
   m_TagString: Untagged
@@ -2609,6 +2611,45 @@ Transform:
   - {fileID: 1424801930}
   m_Father: {fileID: 37430118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &401681541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401681539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 165684e5dede94e35a5c3e91ac924294, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  counterDropZone: {fileID: 509060547}
+  customerSpawner: {fileID: 1803491682}
+  requireAnyItemOnCounter: 0
+  reactionPanel: {fileID: 0}
+  reactionText: {fileID: 0}
+  reactionTime: 5
+--- !u!65 &401681542
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401681539}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &403289388
 GameObject:
   m_ObjectHideFlags: 0
@@ -4494,7 +4535,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
       propertyPath: m_Name
-      value: Cafe_Plate_1
+      value: DecorativePlate
       objectReference: {fileID: 0}
     - target: {fileID: 5195768160251915419, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5706,7 +5747,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1246674552413394, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       propertyPath: m_Name
-      value: PW_espresso_cup
+      value: Cup of Espresso
       objectReference: {fileID: 0}
     - target: {fileID: 4231305011238820, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6781,7 +6822,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1097591313}
+      addedObject: {fileID: 1097591316}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1097591312}
@@ -6817,7 +6858,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.18018553, y: 0.062362824, z: 0.18018797}
   m_Center: {x: -0.0000050067897, y: 0.031181412, z: 0.00000017881393}
---- !u!114 &1097591313
+--- !u!114 &1097591316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6826,11 +6867,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1097591311}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9f27e0ffddeafd4bbe348d9646528b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 165684e5dede94e35a5c3e91ac924294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: DrinkRating
-  savePlayerReturnPosition: 1
+  counterDropZone: {fileID: 509060547}
+  customerSpawner: {fileID: 1803491682}
+  requireAnyItemOnCounter: 1
+  reactionPanel: {fileID: 0}
+  reactionText: {fileID: 0}
+  reactionTime: 4
 --- !u!1 &1098328632
 GameObject:
   m_ObjectHideFlags: 0
@@ -7637,7 +7682,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.05, y: 1.802, z: -0.72}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -9014,7 +9059,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1424801933}
+      addedObject: {fileID: 1424801936}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1424801932}
@@ -9050,7 +9095,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.18018553, y: 0.062362824, z: 0.18018797}
   m_Center: {x: -0.0000050067897, y: 0.031181412, z: 0.00000017881393}
---- !u!114 &1424801933
+--- !u!114 &1424801936
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9059,11 +9104,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1424801931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9f27e0ffddeafd4bbe348d9646528b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 165684e5dede94e35a5c3e91ac924294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: DrinkRating
-  savePlayerReturnPosition: 1
+  counterDropZone: {fileID: 509060547}
+  customerSpawner: {fileID: 1803491682}
+  requireAnyItemOnCounter: 1
+  reactionPanel: {fileID: 0}
+  reactionText: {fileID: 0}
+  reactionTime: 4
 --- !u!1 &1432253594
 GameObject:
   m_ObjectHideFlags: 0
@@ -10831,7 +10880,7 @@ Transform:
   m_GameObject: {fileID: 1752252529}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.012, y: 1.951, z: 1.231}
+  m_LocalPosition: {x: -0.012, y: 1.988, z: 1.231}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11161,7 +11210,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1798010300}
+      addedObject: {fileID: 1798010303}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f41c1566b893745429417c6aa699240a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1798010299}
@@ -11197,7 +11246,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.18018553, y: 0.062362824, z: 0.18018797}
   m_Center: {x: -0.0000050067897, y: 0.031181412, z: 0.00000017881393}
---- !u!114 &1798010300
+--- !u!114 &1798010303
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11206,11 +11255,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1798010298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9f27e0ffddeafd4bbe348d9646528b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 165684e5dede94e35a5c3e91ac924294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: DrinkRating
-  savePlayerReturnPosition: 1
+  counterDropZone: {fileID: 509060547}
+  customerSpawner: {fileID: 1803491682}
+  requireAnyItemOnCounter: 1
+  reactionPanel: {fileID: 0}
+  reactionText: {fileID: 0}
+  reactionTime: 4
 --- !u!1 &1803491680
 GameObject:
   m_ObjectHideFlags: 0
@@ -13897,25 +13950,25 @@ SceneRoots:
   - {fileID: 985549485}
   - {fileID: 1112751425}
   - {fileID: 1997174607}
-  - {fileID: 1651584036}
-  - {fileID: 37430118}
-  - {fileID: 1284028606}
-  - {fileID: 12388192}
   - {fileID: 1803491681}
   - {fileID: 1792069324}
+  - {fileID: 1651584036}
+  - {fileID: 37430118}
+  - {fileID: 621607262}
+  - {fileID: 2093979588}
+  - {fileID: 1449267977}
+  - {fileID: 1284028606}
+  - {fileID: 12388192}
   - {fileID: 1744035412}
   - {fileID: 124359428}
-  - {fileID: 2093979588}
-  - {fileID: 621607262}
-  - {fileID: 1449267977}
   - {fileID: 887267655}
-  - {fileID: 200799165}
-  - {fileID: 1877669335}
-  - {fileID: 871031394}
   - {fileID: 509060548}
+  - {fileID: 200799165}
+  - {fileID: 1450513215}
+  - {fileID: 1877669335}
+  - {fileID: 1752252530}
   - {fileID: 1270175864}
+  - {fileID: 553588881}
   - {fileID: 1263446562}
   - {fileID: 638741013}
-  - {fileID: 1450513215}
-  - {fileID: 1752252530}
-  - {fileID: 553588881}
+  - {fileID: 871031394}

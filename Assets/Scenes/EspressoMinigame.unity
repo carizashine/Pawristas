@@ -307,7 +307,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100006, guid: 8cf7e78c936024f5188a4948d67d992e, type: 3}
       propertyPath: m_Name
-      value: PW_espresso_cup
+      value: Espresso Cup
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 8cf7e78c936024f5188a4948d67d992e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1764,7 +1764,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1246674552413394, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       propertyPath: m_Name
-      value: ESPRESSO THINGY
+      value: EspressoPuck
       objectReference: {fileID: 0}
     - target: {fileID: 4231305011238820, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11672,7 +11672,6 @@ SceneRoots:
   - {fileID: 82198956}
   - {fileID: 595979537}
   - {fileID: 2037353108}
-  - {fileID: 1113502299}
   - {fileID: 325760624}
   - {fileID: 35239964}
   - {fileID: 1493672432}
@@ -11681,3 +11680,4 @@ SceneRoots:
   - {fileID: 878459682}
   - {fileID: 551756853}
   - {fileID: 493865311}
+  - {fileID: 1113502299}

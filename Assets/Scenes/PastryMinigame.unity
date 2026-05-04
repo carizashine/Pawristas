@@ -144,8 +144,8 @@ Transform:
   m_GameObject: {fileID: 14137720}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.073, y: 1.967, z: 1.077}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalPosition: {x: 0.073, y: 1.995, z: 1.048}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -711,6 +711,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 64230869166903126, guid: 80b8d62454dc44cf2984af37c98f941e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -718,6 +722,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1533911595845050, guid: 80b8d62454dc44cf2984af37c98f941e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 150091518}
+    - targetCorrespondingSourceObject: {fileID: 1533911595845050, guid: 80b8d62454dc44cf2984af37c98f941e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 150091520}
   m_SourcePrefab: {fileID: 100100000, guid: 80b8d62454dc44cf2984af37c98f941e, type: 3}
 --- !u!4 &64934222 stripped
 Transform:
@@ -1130,6 +1137,27 @@ MonoBehaviour:
   dragCamera: {fileID: 1611703933}
   dropZone: {fileID: 1716071328}
   dragSmoothness: 25
+--- !u!135 &150091520
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150091514}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Radius: 0.15000008
+  m_Center: {x: 0.00000025331974, y: 0.0509471, z: -0.000000230968}
 --- !u!1 &151214186
 GameObject:
   m_ObjectHideFlags: 0
@@ -7289,6 +7317,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 64889270815683954, guid: 77b051a1cce5b4a36a8cca319997554d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8965,7 +8997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a153134de3f3ad749b64fb3229265894, type: 3}
       propertyPath: m_Name
-      value: Cafe_Plate_1
+      value: Plate
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12155,6 +12187,18 @@ PrefabInstance:
     - target: {fileID: 3380691163361251938, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3394049046826591421, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3394049046826591421, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.066
+      objectReference: {fileID: 0}
+    - target: {fileID: 3394049046826591421, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.215
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
