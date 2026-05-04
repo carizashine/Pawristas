@@ -1,24 +1,95 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using TMPro;
 
 public class FPSInteract : MonoBehaviour
 {
-    [SerializeField] private float interactDistance = 3f;
+    [Header("Interaction")]
+    public float distance = 3f;
+    public Camera cam;
 
-    void Update()
+    [Header("Optional UI")]
+    public TextMeshProUGUI prompt;
+
+    private IInteractable currentInteractable;
+
+    private void Start()
     {
-        if (Input.GetMouseButtonDown(0)) // left click / tap
+        if (cam == null)
         {
-            Ray ray = new Ray(transform.position, transform.forward);
+            cam = Camera.main;
+        }
 
-            if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        if (prompt != null)
+        {
+            prompt.gameObject.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+        if (cam == null)
+        {
+            cam = Camera.main;
+            if (cam == null) return;
+        }
+
+        CheckForInteractable();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            TryInteract();
+        }
+    }
+
+    private void CheckForInteractable()
+    {
+        currentInteractable = null;
+
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, distance))
+        {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+
+            if (interactable != null)
             {
-                ClickableSceneObject clickable = hit.collider.GetComponent<ClickableSceneObject>();
+                currentInteractable = interactable;
 
-                if (clickable != null)
+                if (prompt != null)
                 {
-                    clickable.LoadScene();
+                    prompt.gameObject.SetActive(true);
+                    prompt.text = interactable.GetPromptText();
                 }
+
+                return;
+            }
+        }
+
+        if (prompt != null)
+        {
+            prompt.gameObject.SetActive(false);
+        }
+    }
+
+    private void TryInteract()
+    {
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, distance))
+        {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+
+            if (interactable != null)
+            {
+                interactable.Interact();
+                return;
+            }
+
+            ClickableSceneObject clickable = hit.collider.GetComponent<ClickableSceneObject>();
+
+            if (clickable != null)
+            {
+                clickable.LoadScene();
             }
         }
     }

@@ -2,17 +2,30 @@ using UnityEngine;
 
 public class MinigamePlayerLock : MonoBehaviour
 {
-    [SerializeField] private Transform minigamePosition;
+    [Header("Scripts To Disable")]
     [SerializeField] private MonoBehaviour fpsController;
+    [SerializeField] private MonoBehaviour fpsInteract;
 
-    void Start()
+    private void Start()
     {
-        transform.position = minigamePosition.position;
-        transform.rotation = minigamePosition.rotation;
+        if (fpsController == null)
+        {
+            fpsController = GetComponent<SimpleFPSController>();
+        }
 
         if (fpsController != null)
         {
             fpsController.enabled = false;
+        }
+
+        if (fpsInteract == null)
+        {
+            fpsInteract = GetComponent<FPSInteract>();
+        }
+
+        if (fpsInteract != null)
+        {
+            fpsInteract.enabled = false;
         }
 
         Cursor.lockState = CursorLockMode.None;
