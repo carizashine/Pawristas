@@ -3138,7 +3138,7 @@ MonoBehaviour:
   requireAnyItemOnCounter: 0
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
-  reactionTime: 7
+  reactionTime: 5
 --- !u!65 &401681542
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5034,7 +5034,7 @@ MonoBehaviour:
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
-  reactionTime: 7
+  reactionTime: 5
 --- !u!1001 &638741013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7385,7 +7385,7 @@ MonoBehaviour:
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
-  reactionTime: 7
+  reactionTime: 5
 --- !u!1 &1098328632
 GameObject:
   m_ObjectHideFlags: 0
@@ -9622,7 +9622,7 @@ MonoBehaviour:
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
-  reactionTime: 7
+  reactionTime: 5
 --- !u!1 &1432253594
 GameObject:
   m_ObjectHideFlags: 0
@@ -11771,7 +11771,7 @@ MonoBehaviour:
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
-  reactionTime: 7
+  reactionTime: 5
 --- !u!1 &1803491680
 GameObject:
   m_ObjectHideFlags: 0
