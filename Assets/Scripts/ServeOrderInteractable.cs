@@ -8,6 +8,10 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
     [SerializeField] private CafeCounterDropZone counterDropZone;
     [SerializeField] private CustomerSpawner customerSpawner;
 
+    [Header("Direct Gemini")]
+    [SerializeField] private DirectGeminiReactionClient DirectGeminiReactionClient;
+    [SerializeField] private bool useDirectGemini = true;
+
     [Header("Requirements")]
     [SerializeField] private bool requireAnyItemOnCounter = true;
 
@@ -16,7 +20,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
     [SerializeField] private TextMeshProUGUI reactionText;
 
     [Header("Timing")]
-    [SerializeField] private float reactionTime = 4f;
+    [SerializeField] private float reactionTime = 5f;
 
     private bool isServing = false;
 
@@ -54,12 +58,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         isServing = true;
 
         GameObject customer = GetCurrentCustomerObject();
-
         int finalScore = GetFinalScore();
-
-        string reactionMessage = GetCustomerReactionText(finalScore);
-        string scoreBreakdown = GetScoreBreakdownText();
-        string fullMessage = reactionMessage + "\n\n" + scoreBreakdown;
 
         if (customer != null)
         {
@@ -70,6 +69,37 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
                 reactionSwap.ShowReaction(finalScore);
             }
         }
+
+        string reactionMessage = GetFallbackCustomerReactionText(finalScore);
+
+        if (useDirectGemini)
+        {
+            if (DirectGeminiReactionClient == null)
+            {
+                DirectGeminiReactionClient =
+                    FindFirstObjectByType<DirectGeminiReactionClient>();
+            }
+
+            if (DirectGeminiReactionClient != null &&
+                GameSessionManager.Instance != null &&
+                GameSessionManager.Instance.CurrentOrder != null &&
+                GameSessionManager.Instance.PlayerResult != null)
+            {
+                yield return StartCoroutine(
+                    DirectGeminiReactionClient.GetReaction(
+                        GameSessionManager.Instance.CurrentOrder,
+                        GameSessionManager.Instance.PlayerResult,
+                        finalScore,
+                        aiText =>
+                        {
+                            reactionMessage = aiText;
+                        }
+                    )
+                );
+            }
+        }
+
+        string fullMessage = reactionMessage + "\n\n" + GetScoreBreakdownText();
 
         ShowReactionMessage(fullMessage);
 
@@ -116,7 +146,8 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
     private GameObject GetCurrentCustomerObject()
     {
-        CustomerInteractable customer = FindFirstObjectByType<CustomerInteractable>();
+        CustomerInteractable customer =
+            FindFirstObjectByType<CustomerInteractable>();
 
         if (customer != null)
         {
@@ -126,7 +157,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         return null;
     }
 
-    private string GetCustomerReactionText(int finalScore)
+    private string GetFallbackCustomerReactionText(int finalScore)
     {
         if (finalScore >= 90)
         {
@@ -164,7 +195,10 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
         if (result.espressoMade)
         {
-            espressoLine += result.espressoSuccessfulShots + " / " + result.espressoRequiredShots;
+            espressoLine +=
+                result.espressoSuccessfulShots +
+                " / " +
+                result.espressoRequiredShots;
         }
         else
         {

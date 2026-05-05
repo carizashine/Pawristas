@@ -2625,6 +2625,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  DirectGeminiReactionClient: {fileID: 0}
+  useDirectGemini: 1
   requireAnyItemOnCounter: 0
   reactionPanel: {fileID: 0}
   reactionText: {fileID: 0}
@@ -3801,6 +3803,53 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496467447}
   m_Mesh: {fileID: -1917694694015025859, guid: e2fe106ccb1596149b8d7ba664b56bc9, type: 3}
+--- !u!1 &499419460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 499419462}
+  - component: {fileID: 499419461}
+  m_Layer: 0
+  m_Name: DirectGeminiReaction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &499419461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499419460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b6a7be4d078d4c1e956b4aad2e71674, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apiKey: AIzaSyA5y1Txwi5zPVbF1EyTX2Edrpk63d02t-8
+  model: gemini-2.5-flash
+  timeoutSeconds: 10
+--- !u!4 &499419462
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499419460}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.1788438, y: 2.2860913, z: -1.0926162}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &509060546
 GameObject:
   m_ObjectHideFlags: 0
@@ -4521,6 +4570,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  DirectGeminiReactionClient: {fileID: 0}
+  useDirectGemini: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 0}
   reactionText: {fileID: 0}
@@ -6872,6 +6923,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  DirectGeminiReactionClient: {fileID: 0}
+  useDirectGemini: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 0}
   reactionText: {fileID: 0}
@@ -9109,6 +9162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  DirectGeminiReactionClient: {fileID: 0}
+  useDirectGemini: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 0}
   reactionText: {fileID: 0}
@@ -11260,6 +11315,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  DirectGeminiReactionClient: {fileID: 0}
+  useDirectGemini: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 0}
   reactionText: {fileID: 0}
@@ -13972,3 +14029,4 @@ SceneRoots:
   - {fileID: 1263446562}
   - {fileID: 638741013}
   - {fileID: 871031394}
+  - {fileID: 499419462}
