@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CafeCupDraggable : MonoBehaviour
 {
+    public static bool IsDraggingAnyCafeItem { get; private set; }
+
     [Header("Item")]
     public CafeItemType itemType = CafeItemType.Espresso;
 
@@ -29,6 +32,8 @@ public class CafeCupDraggable : MonoBehaviour
     private bool isDragging;
     private bool isPlaced;
 
+    private int activeTouchId = -1;
+
     private Collider cupCollider;
 
     [SerializeField] private AudioSource pickupAudio;
@@ -51,23 +56,18 @@ public class CafeCupDraggable : MonoBehaviour
         if (dragCamera == null)
         {
             dragCamera = Camera.main;
-            if (dragCamera == null) return;
+
+            if (dragCamera == null)
+            {
+                return;
+            }
         }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            TryStartDrag();
-        }
-
-        if (Input.GetMouseButton(0) && isDragging)
-        {
-            UpdateTargetPosition();
-        }
-
-        if (Input.GetMouseButtonUp(0) && isDragging)
-        {
-            StopDrag();
-        }
+#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
+        HandleTouchInput();
+#else
+        HandleMouseInput();
+#endif
     }
 
     private void LateUpdate()
@@ -82,57 +82,148 @@ public class CafeCupDraggable : MonoBehaviour
         }
     }
 
-    private void TryStartDrag()
+    private void HandleMouseInput()
     {
-        if (isPlaced)
+        if (Input.GetMouseButtonDown(0))
         {
+            TryStartDrag(Input.mousePosition, -1, false);
+        }
+
+        if (Input.GetMouseButton(0) && isDragging)
+        {
+            UpdateTargetPosition(Input.mousePosition);
+        }
+
+        if (Input.GetMouseButtonUp(0) && isDragging)
+        {
+            StopDrag(Input.mousePosition, false);
+        }
+    }
+
+    private void HandleTouchInput()
+    {
+        if (isDragging)
+        {
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                Touch touch = Input.GetTouch(i);
+
+                if (touch.fingerId != activeTouchId)
+                {
+                    continue;
+                }
+
+                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+                {
+                    if (touch.phase == TouchPhase.Moved &&
+                        SimpleFPSController.Instance != null)
+                    {
+                        SimpleFPSController.Instance.ApplyMobileLookDelta(touch.deltaPosition);
+                    }
+
+                    UpdateTargetPosition(touch.position);
+                    return;
+                }
+
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    StopDrag(touch.position, true);
+                    return;
+                }
+            }
+
             return;
         }
 
-        Ray ray = dragCamera.ScreenPointToRay(Input.mousePosition);
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            Touch touch = Input.GetTouch(i);
+
+            if (touch.phase != TouchPhase.Began)
+            {
+                continue;
+            }
+
+            if (EventSystem.current != null &&
+                EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            {
+                continue;
+            }
+
+            if (TryStartDrag(touch.position, touch.fingerId, true))
+            {
+                return;
+            }
+        }
+    }
+
+    private bool TryStartDrag(Vector2 screenPosition, int touchId, bool isMobileTouch)
+    {
+        if (isPlaced)
+        {
+            return false;
+        }
+
+        if (cupCollider == null)
+        {
+            return false;
+        }
+
+        Ray ray = dragCamera.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~0, QueryTriggerInteraction.Ignore))
         {
             if (hit.collider == cupCollider || hit.collider.transform.IsChildOf(transform))
             {
                 isDragging = true;
+                IsDraggingAnyCafeItem = true;
+                activeTouchId = touchId;
+
                 if (pickupAudio != null)
                 {
                     pickupAudio.Play();
                 }
 
-                if (disablePlayerMovementWhileDragging && fpsController != null)
+                if (!isMobileTouch &&
+                    disablePlayerMovementWhileDragging &&
+                    fpsController != null)
                 {
                     fpsController.enabled = false;
                 }
 
                 screenDepth = dragCamera.WorldToScreenPoint(transform.position).z;
 
-                Vector3 mouseWorldPosition = GetMouseWorldPosition();
-                offset = transform.position - mouseWorldPosition;
+                Vector3 pointerWorldPosition = GetPointerWorldPosition(screenPosition);
+                offset = transform.position - pointerWorldPosition;
 
                 targetPosition = transform.position;
 
                 Debug.Log("Started dragging cafe item: " + itemType);
+
+                return true;
             }
         }
+
+        return false;
     }
 
-    private void UpdateTargetPosition()
+    private void UpdateTargetPosition(Vector2 screenPosition)
     {
-        targetPosition = GetMouseWorldPosition() + offset;
+        targetPosition = GetPointerWorldPosition(screenPosition) + offset;
     }
 
-    private void StopDrag()
+    private void StopDrag(Vector2 screenPosition, bool isMobileTouch)
     {
         isDragging = false;
+        IsDraggingAnyCafeItem = false;
+        activeTouchId = -1;
 
         // 1) Check the syrup station first (espresso cups only).
         bool syrupStationReceived = false;
 
         if (syrupStation != null &&
             itemType == CafeItemType.Espresso &&
-            syrupStation.IsMouseOverDropZone(dragCamera, Input.mousePosition))
+            syrupStation.IsMouseOverDropZone(dragCamera, screenPosition))
         {
             syrupStation.ReceiveCup(this);
             syrupStationReceived = true;
@@ -142,7 +233,7 @@ public class CafeCupDraggable : MonoBehaviour
         if (!syrupStationReceived)
         {
             if (dropZone != null &&
-                dropZone.IsMouseOverDropZone(dragCamera, Input.mousePosition, itemType))
+                dropZone.IsMouseOverDropZone(dragCamera, screenPosition, itemType))
             {
                 dropZone.ReceiveCup(this);
             }
@@ -153,18 +244,20 @@ public class CafeCupDraggable : MonoBehaviour
             }
         }
 
-        if (disablePlayerMovementWhileDragging && fpsController != null)
+        if (!isMobileTouch &&
+            disablePlayerMovementWhileDragging &&
+            fpsController != null)
         {
             fpsController.enabled = true;
         }
     }
 
-    private Vector3 GetMouseWorldPosition()
+    private Vector3 GetPointerWorldPosition(Vector2 screenPosition)
     {
-        Vector3 mouseScreenPosition = Input.mousePosition;
-        mouseScreenPosition.z = screenDepth;
+        Vector3 pointerScreenPosition = screenPosition;
+        pointerScreenPosition.z = screenDepth;
 
-        return dragCamera.ScreenToWorldPoint(mouseScreenPosition);
+        return dragCamera.ScreenToWorldPoint(pointerScreenPosition);
     }
 
     private void ResetCup()
@@ -183,7 +276,10 @@ public class CafeCupDraggable : MonoBehaviour
     {
         isPlaced = true;
         isDragging = false;
+        IsDraggingAnyCafeItem = false;
+        activeTouchId = -1;
     }
+
     public void SetPickupAudio(AudioSource audioSource)
     {
         pickupAudio = audioSource;
