@@ -28,6 +28,8 @@ public class CafeCupDraggable : MonoBehaviour
 
     private Collider cupCollider;
 
+    [SerializeField] private AudioSource pickupAudio;
+
     private void Start()
     {
         startPosition = transform.position;
@@ -91,6 +93,10 @@ public class CafeCupDraggable : MonoBehaviour
             if (hit.collider == cupCollider || hit.collider.transform.IsChildOf(transform))
             {
                 isDragging = true;
+                if (pickupAudio != null)
+                {
+                    pickupAudio.Play();
+                }
 
                 if (disablePlayerMovementWhileDragging && fpsController != null)
                 {
@@ -158,5 +164,9 @@ public class CafeCupDraggable : MonoBehaviour
     {
         isPlaced = true;
         isDragging = false;
+    }
+    public void SetPickupAudio(AudioSource audioSource)
+    {
+        pickupAudio = audioSource;
     }
 }

@@ -8,6 +8,8 @@ public class CafeCounterDropZone : MonoBehaviour
 
     [Header("Drop Settings")]
     public float screenAcceptRadius = 200f;
+    [Header("Audio")]
+    [SerializeField] private AudioSource placeAudio;
 
     private CafeCupDraggable placedEspresso;
     private CafeCupDraggable placedPastry;
@@ -86,6 +88,11 @@ public class CafeCounterDropZone : MonoBehaviour
         item.MarkPlaced();
 
         RegisterPlacedItem(item);
+        Debug.Log("Placement sound should play now.");
+        if (placeAudio != null)
+        {
+            placeAudio.Play();
+        }
 
         if (item.itemType == CafeItemType.Espresso)
         {

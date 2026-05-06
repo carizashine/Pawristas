@@ -27,6 +27,9 @@ public class CafePastrySpawner : MonoBehaviour
     [Header("Debug")]
     public bool showDebugLogs = true;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource spawnAudio;
+
     private IEnumerator Start()
     {
         yield return null;
@@ -93,6 +96,11 @@ public class CafePastrySpawner : MonoBehaviour
         pastry.transform.localEulerAngles = pastryLocalRotation;
         pastry.transform.localScale = pastryLocalScale;
 
+        if (spawnAudio != null)
+        {
+            spawnAudio.Play();
+        }
+
         if (plate.GetComponent<Collider>() == null)
         {
             plate.AddComponent<BoxCollider>();
@@ -110,6 +118,12 @@ public class CafePastrySpawner : MonoBehaviour
         draggable.fpsController = fpsController;
         draggable.dropZone = counterDropZone;
         draggable.disablePlayerMovementWhileDragging = false;
+
+        AudioSource pickupAudio = plate.GetComponent<AudioSource>();
+        if (pickupAudio != null)
+        {
+            draggable.SetPickupAudio(pickupAudio);
+        }
 
         if (alreadyPlaced)
         {

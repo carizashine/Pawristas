@@ -43,6 +43,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
         }
 
         orderDisplayUI.ShowCurrentOrder();
+        GetComponent<AudioSource>().Play();
 
         Debug.Log("Customer order opened.");
     }

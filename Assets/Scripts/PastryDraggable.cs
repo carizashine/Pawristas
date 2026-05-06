@@ -12,6 +12,11 @@ public class PastryDraggable : MonoBehaviour
     [Header("Drag Settings")]
     public float dragSmoothness = 25f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource dropAudio;
+
+    [SerializeField] private AudioSource pickupAudio;
+
     private Vector3 startPosition;
     private Quaternion startRotation;
 
@@ -111,6 +116,11 @@ public class PastryDraggable : MonoBehaviour
     {
         isDragging = true;
 
+        if (pickupAudio != null)
+        {
+            pickupAudio.Play();
+        }
+
         screenDepth = dragCamera.WorldToScreenPoint(transform.position).z;
 
         Vector3 mouseWorldPosition = GetMouseWorldPosition();
@@ -136,6 +146,11 @@ public class PastryDraggable : MonoBehaviour
 
             if (success)
             {
+                if (dropAudio != null)
+                {
+                    dropAudio.Play();
+                }
+
                 return;
             }
         }

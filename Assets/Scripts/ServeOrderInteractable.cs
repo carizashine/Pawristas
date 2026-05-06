@@ -17,6 +17,9 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
     [Header("Timing")]
     [SerializeField] private float reactionTime = 4f;
+    [Header("Reaction Sounds")]
+    [SerializeField] private AudioSource happyAudio;
+    [SerializeField] private AudioSource sadAudio;
 
     private bool isServing = false;
 
@@ -56,6 +59,20 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         GameObject customer = GetCurrentCustomerObject();
 
         int finalScore = GetFinalScore();
+        if (finalScore >= 70)
+        {
+            if (happyAudio != null)
+            {
+                happyAudio.Play();
+            }
+        }
+        else
+        {
+            if (sadAudio != null)
+            {
+                sadAudio.Play();
+            }
+        }
 
         string reactionMessage = GetCustomerReactionText(finalScore);
         string scoreBreakdown = GetScoreBreakdownText();

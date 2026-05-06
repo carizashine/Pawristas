@@ -26,10 +26,15 @@ public class EspressoMiniGameController : MonoBehaviour
     [SerializeField] private GameObject espressoCupPrefab;
     [SerializeField] private Transform espressoCupSpawnPoint;
 
+    [SerializeField] private AudioSource cupSpawnAudio;
+
     [Header("Timing")]
     [SerializeField] private float nextShotDelay = 0.7f;
     [SerializeField] private float returnToCafeDelay = 1.4f;
     [SerializeField] private float dropAnimationTime = 0.35f;
+    [Header("Audio")]
+    [SerializeField] private AudioSource successAudio;
+    [SerializeField] private AudioSource failAudio;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI instructionText;
@@ -145,6 +150,10 @@ public class EspressoMiniGameController : MonoBehaviour
         if (landed)
         {
             successfulShots++;
+            if (successAudio != null)
+            {
+                successAudio.Play();
+            }
 
             if (feedbackText != null)
             {
@@ -162,6 +171,10 @@ public class EspressoMiniGameController : MonoBehaviour
         if (feedbackText != null)
         {
             feedbackText.text = "Missed!";
+        }
+        if (failAudio != null)
+        {
+            failAudio.Play();
         }
 
         Debug.Log("Espresso shot missed. Score: " + successfulShots + " / " + requiredShots);
@@ -290,6 +303,10 @@ public class EspressoMiniGameController : MonoBehaviour
             espressoCupSpawnPoint.position,
             espressoCupSpawnPoint.rotation
         );
+        if (cupSpawnAudio != null)
+{
+    cupSpawnAudio.Play();
+}
     }
 
     private IEnumerator ReturnToCafeAfterDelay()

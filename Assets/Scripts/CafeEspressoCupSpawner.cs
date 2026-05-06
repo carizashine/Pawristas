@@ -10,6 +10,8 @@ public class CafeEspressoCupSpawner : MonoBehaviour
     public Camera playerCamera;
     public MonoBehaviour fpsController;
     public CafeCounterDropZone counterDropZone;
+    [Header("Audio")]
+    [SerializeField] private AudioSource spawnAudio;
 
     private void Start()
     {
@@ -57,6 +59,10 @@ public class CafeEspressoCupSpawner : MonoBehaviour
             spawnPoint.position,
             spawnPoint.rotation
         );
+        if (spawnAudio != null)
+        {
+            spawnAudio.Play();
+        }
 
         if (cup.GetComponent<Collider>() == null)
         {
