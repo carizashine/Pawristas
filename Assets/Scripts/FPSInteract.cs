@@ -1,41 +1,63 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.EventSystems;
 
 public class FPSInteract : MonoBehaviour
 {
     [Header("Interaction")]
-    public float distance = 3f;
-    public Camera cam;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private LayerMask interactMask = ~0;
 
-    [Header("Optional UI")]
-    public TextMeshProUGUI prompt;
+    [Header("Input")]
+    [SerializeField] private KeyCode keyboardInteractKey = KeyCode.E;
+    [SerializeField] private bool allowMouseClickInteract = true;
+    [SerializeField] private bool allowTouchInteract = true;
+
+    [Header("Mobile Protection")]
+    [Tooltip("Prevents immediately re-clicking the fridge/machine after returning from a minigame.")]
+    [SerializeField] private float interactCooldownAfterEnable = 0.35f;
+
+    [Tooltip("On mobile, ignore touches on the left side where the D-pad usually is.")]
+    [SerializeField] private bool ignoreLeftSideTouches = true;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float leftSideIgnorePercent = 0.45f;
+
+    [Header("Prompt UI")]
+    [SerializeField] private GameObject promptPanel;
+    [SerializeField] private TMPro.TextMeshProUGUI promptText;
 
     private IInteractable currentInteractable;
+    private float canInteractTime;
 
-    private void Start()
+    private void Awake()
     {
-        if (cam == null)
+        if (playerCamera == null)
         {
-            cam = Camera.main;
+            playerCamera = Camera.main;
         }
+    }
 
-        if (prompt != null)
-        {
-            prompt.gameObject.SetActive(false);
-        }
+    private void OnEnable()
+    {
+        canInteractTime = Time.time + interactCooldownAfterEnable;
     }
 
     private void Update()
     {
-        if (cam == null)
+        if (playerCamera == null)
         {
-            cam = Camera.main;
-            if (cam == null) return;
+            playerCamera = Camera.main;
+            if (playerCamera == null)
+            {
+                HidePrompt();
+                return;
+            }
         }
 
         CheckForInteractable();
 
-        if (Input.GetMouseButtonDown(0))
+        if (PressedInteract())
         {
             TryInteract();
         }
@@ -45,52 +67,125 @@ public class FPSInteract : MonoBehaviour
     {
         currentInteractable = null;
 
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        Ray ray = new Ray(
+            playerCamera.transform.position,
+            playerCamera.transform.forward
+        );
 
-        if (Physics.Raycast(ray, out RaycastHit hit, distance))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask, QueryTriggerInteraction.Collide))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            currentInteractable = hit.collider.GetComponentInParent<IInteractable>();
 
-            if (interactable != null)
+            if (currentInteractable != null)
             {
-                currentInteractable = interactable;
-
-                if (prompt != null)
-                {
-                    prompt.gameObject.SetActive(true);
-                    prompt.text = interactable.GetPromptText();
-                }
-
+                ShowPrompt(currentInteractable.GetPromptText());
                 return;
             }
         }
 
-        if (prompt != null)
+        HidePrompt();
+    }
+
+    private bool PressedInteract()
+    {
+        if (Time.time < canInteractTime)
         {
-            prompt.gameObject.SetActive(false);
+            return false;
         }
+
+        if (Input.GetKeyDown(keyboardInteractKey))
+        {
+            return true;
+        }
+
+#if UNITY_IOS || UNITY_ANDROID
+        if (!allowTouchInteract)
+        {
+            return false;
+        }
+
+        if (Input.touchCount == 0)
+        {
+            return false;
+        }
+
+        Touch touch = Input.GetTouch(0);
+
+        if (touch.phase != TouchPhase.Began)
+        {
+            return false;
+        }
+
+        if (EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+        {
+            return false;
+        }
+
+        if (ignoreLeftSideTouches &&
+            touch.position.x < Screen.width * leftSideIgnorePercent)
+        {
+            return false;
+        }
+
+        return true;
+#else
+        if (!allowMouseClickInteract)
+        {
+            return false;
+        }
+
+        if (!Input.GetMouseButtonDown(0))
+        {
+            return false;
+        }
+
+        if (EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject())
+        {
+            return false;
+        }
+
+        return true;
+#endif
     }
 
     private void TryInteract()
     {
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, distance))
+        if (currentInteractable == null)
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            return;
+        }
 
-            if (interactable != null)
-            {
-                interactable.Interact();
-                return;
-            }
+        currentInteractable.Interact();
 
-            ClickableSceneObject clickable = hit.collider.GetComponent<ClickableSceneObject>();
+        // Prevent double-triggering if the tap/click is still being processed.
+        canInteractTime = Time.time + 0.15f;
+    }
 
-            if (clickable != null)
-            {
-                clickable.LoadScene();
-            }
+    private void ShowPrompt(string message)
+    {
+        if (promptPanel != null)
+        {
+            promptPanel.SetActive(true);
+        }
+
+        if (promptText != null)
+        {
+            promptText.text = message;
+        }
+    }
+
+    private void HidePrompt()
+    {
+        if (promptPanel != null)
+        {
+            promptPanel.SetActive(false);
+        }
+
+        if (promptText != null)
+        {
+            promptText.text = "";
         }
     }
 }
