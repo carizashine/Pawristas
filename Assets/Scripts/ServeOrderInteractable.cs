@@ -8,6 +8,10 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
     [SerializeField] private CafeCounterDropZone counterDropZone;
     [SerializeField] private CustomerSpawner customerSpawner;
 
+    [Header("Gemini Dialogue")]
+    [SerializeField] private GeminiDialogueClient geminiDialogueClient;
+    [SerializeField] private bool useAIReactionDialogue = true;
+
     [Header("Requirements")]
     [SerializeField] private bool requireAnyItemOnCounter = true;
 
@@ -17,6 +21,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
     [Header("Timing")]
     [SerializeField] private float reactionTime = 4f;
+
     [Header("Reaction Sounds")]
     [SerializeField] private AudioSource happyAudio;
     [SerializeField] private AudioSource sadAudio;
@@ -59,6 +64,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         GameObject customer = GetCurrentCustomerObject();
 
         int finalScore = GetFinalScore();
+
         if (finalScore >= 70)
         {
             if (happyAudio != null)
@@ -75,8 +81,6 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         }
 
         string reactionMessage = GetCustomerReactionText(finalScore);
-        string scoreBreakdown = GetScoreBreakdownText();
-        string fullMessage = reactionMessage + "\n\n" + scoreBreakdown;
 
         if (customer != null)
         {
@@ -88,9 +92,40 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
             }
         }
 
-        ShowReactionMessage(fullMessage);
+        if (useAIReactionDialogue)
+        {
+            if (geminiDialogueClient == null)
+            {
+                geminiDialogueClient = FindFirstObjectByType<GeminiDialogueClient>();
+            }
 
-        Debug.Log(fullMessage);
+            if (geminiDialogueClient != null &&
+                GameSessionManager.Instance != null &&
+                GameSessionManager.Instance.CurrentOrder != null &&
+                GameSessionManager.Instance.PlayerResult != null)
+            {
+                yield return StartCoroutine(
+                    geminiDialogueClient.GenerateReactionDialogue(
+                        GameSessionManager.Instance.CurrentOrder,
+                        GameSessionManager.Instance.PlayerResult,
+                        finalScore,
+                        aiText =>
+                        {
+                            reactionMessage = aiText;
+                        }
+                    )
+                );
+            }
+            else
+            {
+                Debug.LogWarning("ServeOrderInteractable: GeminiDialogueClient/order/result missing. Using fallback reaction.");
+            }
+        }
+
+        string scoreBreakdown = GetScoreBreakdownText();
+        string fullMessage = reactionMessage + "\n\n" + scoreBreakdown;
+
+        ShowReactionMessage(fullMessage);
 
         yield return new WaitForSeconds(reactionTime);
 

@@ -3187,6 +3187,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  geminiDialogueClient: {fileID: 0}
+  useAIReactionDialogue: 1
   requireAnyItemOnCounter: 0
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
@@ -5422,6 +5424,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   promptText: Press E to take order
   orderDisplayUI: {fileID: 887267654}
+  geminiDialogueClient: {fileID: 0}
+  useAIOrderDialogue: 1
+  orderAudio: {fileID: 0}
 --- !u!1001 &623593511
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5489,9 +5494,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1233966927152708, guid: 2e244810fcf8442c2ae5cd7b1f494341, type: 3}
       insertIndex: -1
       addedObject: {fileID: 623593513}
-    - targetCorrespondingSourceObject: {fileID: 1233966927152708, guid: 2e244810fcf8442c2ae5cd7b1f494341, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 623593519}
   m_SourcePrefab: {fileID: 100100000, guid: 2e244810fcf8442c2ae5cd7b1f494341, type: 3}
 --- !u!1 &623593512 stripped
 GameObject:
@@ -5524,26 +5526,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4109101165490198, guid: 2e244810fcf8442c2ae5cd7b1f494341, type: 3}
   m_PrefabInstance: {fileID: 623593511}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &623593519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623593512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 165684e5dede94e35a5c3e91ac924294, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  counterDropZone: {fileID: 509060547}
-  customerSpawner: {fileID: 1803491682}
-  requireAnyItemOnCounter: 1
-  reactionPanel: {fileID: 2068570111}
-  reactionText: {fileID: 142039314}
-  reactionTime: 5
-  happyAudio: {fileID: 0}
-  sadAudio: {fileID: 0}
 --- !u!1001 &638741013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6868,6 +6850,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 985549485}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &834221714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 834221716}
+  - component: {fileID: 834221715}
+  m_Layer: 0
+  m_Name: GeminiDialogueClient
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &834221715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 834221714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14282d014852f48c3842014fb2894e49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apiKey: DVU
+  model: gemini-2.5-flash
+  timeoutSeconds: 10
+--- !u!4 &834221716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 834221714}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.87350386, y: 2.3979137, z: 1.0001577}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &871031394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8111,6 +8140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  geminiDialogueClient: {fileID: 834221715}
+  useAIReactionDialogue: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
@@ -10550,6 +10581,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  geminiDialogueClient: {fileID: 834221715}
+  useAIReactionDialogue: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
@@ -11739,9 +11772,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6641815192814609977, guid: 8b24fa8284a133048a6f7a6c4d6e5baf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1668370322}
-    - targetCorrespondingSourceObject: {fileID: 6641815192814609977, guid: 8b24fa8284a133048a6f7a6c4d6e5baf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1668370321}
   m_SourcePrefab: {fileID: 100100000, guid: 8b24fa8284a133048a6f7a6c4d6e5baf, type: 3}
 --- !u!1 &1619757559
 GameObject:
@@ -12193,20 +12223,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6641815192814609977, guid: 8b24fa8284a133048a6f7a6c4d6e5baf, type: 3}
   m_PrefabInstance: {fileID: 1560185883}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1668370321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668370316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9f27e0ffddeafd4bbe348d9646528b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: TakingOrder
-  savePlayerReturnPosition: 1
 --- !u!65 &1668370322
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13000,6 +13016,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   counterDropZone: {fileID: 509060547}
   customerSpawner: {fileID: 1803491682}
+  geminiDialogueClient: {fileID: 834221715}
+  useAIReactionDialogue: 1
   requireAnyItemOnCounter: 1
   reactionPanel: {fileID: 2068570111}
   reactionText: {fileID: 142039314}
@@ -16228,6 +16246,7 @@ SceneRoots:
   - {fileID: 1270175864}
   - {fileID: 553588881}
   - {fileID: 1263446562}
+  - {fileID: 834221716}
   - {fileID: 638741013}
   - {fileID: 871031394}
   - {fileID: 475359809}
