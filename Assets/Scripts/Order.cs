@@ -37,7 +37,20 @@ public class Order
     public SyrupType syrup;
     public PastryType pastry;
 
+    [TextArea]
+    public string customerOrderDialogue;
+
     public string GetOrderText()
+    {
+        if (!string.IsNullOrWhiteSpace(customerOrderDialogue))
+        {
+            return customerOrderDialogue;
+        }
+
+        return GetPlainOrderText();
+    }
+
+    public string GetPlainOrderText()
     {
         return customerName + " wants a " +
                drinkType + " with " +
@@ -102,6 +115,10 @@ public static class OrderGenerator
 
         // Avoid None for customer pastry orders.
         order.pastry = GetRandomPastry();
+
+        // Gemini fills this later when the player clicks the customer.
+        // If Gemini fails or is disabled, GetOrderText() falls back to GetPlainOrderText().
+        order.customerOrderDialogue = "";
 
         return order;
     }

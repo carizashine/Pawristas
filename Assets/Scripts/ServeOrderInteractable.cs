@@ -8,9 +8,9 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
     [SerializeField] private CafeCounterDropZone counterDropZone;
     [SerializeField] private CustomerSpawner customerSpawner;
 
-    [Header("Direct Gemini")]
-    [SerializeField] private DirectGeminiReactionClient DirectGeminiReactionClient;
-    [SerializeField] private bool useDirectGemini = true;
+    [Header("Gemini Dialogue")]
+    [SerializeField] private GeminiDialogueClient geminiDialogueClient;
+    [SerializeField] private bool useAIReactionDialogue = true;
 
     [Header("Requirements")]
     [SerializeField] private bool requireAnyItemOnCounter = true;
@@ -20,7 +20,11 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
     [SerializeField] private TextMeshProUGUI reactionText;
 
     [Header("Timing")]
-    [SerializeField] private float reactionTime = 5f;
+    [SerializeField] private float reactionTime = 4f;
+
+    [Header("Reaction Sounds")]
+    [SerializeField] private AudioSource happyAudio;
+    [SerializeField] private AudioSource sadAudio;
 
     private bool isServing = false;
 
@@ -58,7 +62,23 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         isServing = true;
 
         GameObject customer = GetCurrentCustomerObject();
+
         int finalScore = GetFinalScore();
+
+        if (finalScore >= 70)
+        {
+            if (happyAudio != null)
+            {
+                happyAudio.Play();
+            }
+        }
+        else
+        {
+            if (sadAudio != null)
+            {
+                sadAudio.Play();
+            }
+        }
 
         if (customer != null)
         {
@@ -70,23 +90,22 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
             }
         }
 
-        string reactionMessage = GetFallbackCustomerReactionText(finalScore);
+        string reactionMessage = GetCustomerReactionText(finalScore);
 
-        if (useDirectGemini)
+        if (useAIReactionDialogue)
         {
-            if (DirectGeminiReactionClient == null)
+            if (geminiDialogueClient == null)
             {
-                DirectGeminiReactionClient =
-                    FindFirstObjectByType<DirectGeminiReactionClient>();
+                geminiDialogueClient = FindFirstObjectByType<GeminiDialogueClient>();
             }
 
-            if (DirectGeminiReactionClient != null &&
+            if (geminiDialogueClient != null &&
                 GameSessionManager.Instance != null &&
                 GameSessionManager.Instance.CurrentOrder != null &&
                 GameSessionManager.Instance.PlayerResult != null)
             {
                 yield return StartCoroutine(
-                    DirectGeminiReactionClient.GetReaction(
+                    geminiDialogueClient.GenerateReactionDialogue(
                         GameSessionManager.Instance.CurrentOrder,
                         GameSessionManager.Instance.PlayerResult,
                         finalScore,
@@ -97,13 +116,16 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
                     )
                 );
             }
+            else
+            {
+                Debug.LogWarning("ServeOrderInteractable: GeminiDialogueClient/order/result missing. Using fallback reaction.");
+            }
         }
 
-        string fullMessage = reactionMessage + "\n\n" + GetScoreBreakdownText();
+        string scoreBreakdown = GetScoreBreakdownText();
+        string fullMessage = reactionMessage + "\n\n" + scoreBreakdown;
 
         ShowReactionMessage(fullMessage);
-
-        Debug.Log(fullMessage);
 
         yield return new WaitForSeconds(reactionTime);
 
@@ -146,8 +168,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
     private GameObject GetCurrentCustomerObject()
     {
-        CustomerInteractable customer =
-            FindFirstObjectByType<CustomerInteractable>();
+        CustomerInteractable customer = FindFirstObjectByType<CustomerInteractable>();
 
         if (customer != null)
         {
@@ -157,7 +178,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         return null;
     }
 
-    private string GetFallbackCustomerReactionText(int finalScore)
+    private string GetCustomerReactionText(int finalScore)
     {
         if (finalScore >= 90)
         {
@@ -171,10 +192,10 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
         if (finalScore >= 40)
         {
-            return "Hmm... this is okay, but something is off.";
+            return "Hmm, this is okay, but something is a little off.";
         }
 
-        return "I do not think this is what I ordered.";
+        return "Oh dear, I do not think this is what I ordered.";
     }
 
     private string GetScoreBreakdownText()
@@ -195,10 +216,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
         if (result.espressoMade)
         {
-            espressoLine +=
-                result.espressoSuccessfulShots +
-                " / " +
-                result.espressoRequiredShots;
+            espressoLine += result.espressoSuccessfulShots + " / " + result.espressoRequiredShots;
         }
         else
         {
