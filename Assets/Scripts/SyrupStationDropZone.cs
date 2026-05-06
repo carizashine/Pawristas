@@ -63,14 +63,17 @@ public class SyrupStationDropZone : MonoBehaviour
 
         // If syrup hasn't been completed yet, trigger the minigame.
         // Otherwise just snap and do nothing (player has already syruped).
-        bool syrupAlreadyDone = OrderProgressTracker.Instance != null &&
-                                OrderProgressTracker.Instance.HasCompletedSyrup;
+        bool syrupAlreadyDone =
+            OrderProgressTracker.Instance != null &&
+            OrderProgressTracker.Instance.HasCompletedSyrup;
 
         if (!syrupAlreadyDone)
         {
+            SaveReturnPositionBeforeSyrupMinigame();
+
             if (GameSessionManager.Instance != null)
             {
-                Debug.Log("Cup placed on syrup stand. Triggering syrup minigame.");
+                Debug.Log("Cup placed on syrup stand. Saved return position and triggering syrup minigame.");
                 GameSessionManager.Instance.GoToSyrupMinigame();
             }
             else
@@ -82,5 +85,21 @@ public class SyrupStationDropZone : MonoBehaviour
         {
             Debug.Log("Cup placed on syrup stand, but syrup is already complete. No action taken.");
         }
+    }
+
+    private void SaveReturnPositionBeforeSyrupMinigame()
+    {
+        SimpleFPSController player =
+            Object.FindFirstObjectByType<SimpleFPSController>();
+
+        if (player == null)
+        {
+            Debug.LogWarning("SyrupStationDropZone: Could not find SimpleFPSController to save return position.");
+            return;
+        }
+
+        SceneReturnData.SaveReturnPosition(player.transform);
+
+        Debug.Log("SyrupStationDropZone: Saved return position before syrup minigame.");
     }
 }
