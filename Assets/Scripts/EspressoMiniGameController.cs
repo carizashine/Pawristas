@@ -28,8 +28,28 @@ public class EspressoMiniGameController : MonoBehaviour
 
     [SerializeField] private AudioSource cupSpawnAudio;
 
+    [Header("Quality Reveal Pan")]
+    [Tooltip("Camera that pans down to reveal the quality. If null, Camera.main is used.")]
+    [SerializeField] private Camera revealCamera;
+
+    [Tooltip("Where the camera ends up when looking down at the cup. Set this above the cup.")]
+    [SerializeField] private Transform panTarget;
+
+    [Tooltip("Renderer of the disc using the EspressoQuality shader. Its material's _Quality property gets driven by the score.")]
+    [SerializeField] private Renderer qualityDiscRenderer;
+
+    [Tooltip("Float property name on the shader.")]
+    [SerializeField] private string qualityShaderProperty = "_Quality";
+
+    [Tooltip("Pause after the last shot before the camera starts panning.")]
+    [SerializeField] private float panStartDelay = 0.7f;
+
+    [Tooltip("How many seconds the pan + rotation takes.")]
+    [SerializeField] private float panDuration = 1.6f;
+
     [Header("Timing")]
     [SerializeField] private float nextShotDelay = 0.7f;
+    [Tooltip("Legacy fallback — only used when no Pan Target is assigned.")]
     [SerializeField] private float returnToCafeDelay = 1.4f;
     [SerializeField] private float dropAnimationTime = 0.35f;
     [Header("Audio")]
@@ -45,6 +65,7 @@ public class EspressoMiniGameController : MonoBehaviour
     private bool canClick = true;
     private bool shouldMovePuck = true;
     private bool minigameFinished = false;
+    private bool awaitingFinalClick = false;
     private float movementTimer = 0f;
 
     private void Start()
@@ -71,6 +92,12 @@ public class EspressoMiniGameController : MonoBehaviour
         ResetPuckToStart();
         UpdateUI();
 
+        // Hide the quality disc until the cup spawns at the end of the minigame.
+        if (qualityDiscRenderer != null)
+        {
+            qualityDiscRenderer.gameObject.SetActive(false);
+        }
+
         Debug.Log("Espresso timing game started. Required shots: " + requiredShots);
     }
 
@@ -78,6 +105,12 @@ public class EspressoMiniGameController : MonoBehaviour
     {
         if (minigameFinished)
         {
+            // After the pan completes we wait for a click to leave the scene.
+            if (awaitingFinalClick && Input.GetMouseButtonDown(0))
+            {
+                awaitingFinalClick = false;
+                LoadCafe();
+            }
             return;
         }
 
@@ -287,7 +320,110 @@ public class EspressoMiniGameController : MonoBehaviour
 
         UpdateUI();
 
-        StartCoroutine(ReturnToCafeAfterDelay());
+        // If the user has set up the pan target + quality disc, do the reveal.
+        // Otherwise fall back to the original auto-load-cafe behavior.
+        if (panTarget != null)
+        {
+            StartCoroutine(PanAndRevealQuality());
+        }
+        else
+        {
+            StartCoroutine(ReturnToCafeAfterDelay());
+        }
+    }
+
+    private IEnumerator PanAndRevealQuality()
+    {
+        yield return new WaitForSeconds(panStartDelay);
+
+        // Drive the shader with our 0..1 quality score.
+        ApplyQualityToShader();
+
+        if (revealCamera == null)
+        {
+            revealCamera = Camera.main;
+        }
+
+        if (revealCamera != null && panTarget != null)
+        {
+            Vector3 startPos    = revealCamera.transform.position;
+            Quaternion startRot = revealCamera.transform.rotation;
+
+            Vector3 endPos    = panTarget.position;
+            // Look straight down (X = 90), keep current Y/Z so framing feels consistent.
+            Quaternion endRot = Quaternion.Euler(
+                90f,
+                revealCamera.transform.eulerAngles.y,
+                0f
+            );
+
+            float elapsed = 0f;
+            while (elapsed < panDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.SmoothStep(0f, 1f, elapsed / panDuration);
+
+                revealCamera.transform.position = Vector3.Lerp(startPos, endPos, t);
+                revealCamera.transform.rotation = Quaternion.Slerp(startRot, endRot, t);
+
+                yield return null;
+            }
+
+            revealCamera.transform.position = endPos;
+            revealCamera.transform.rotation = endRot;
+        }
+
+        // Update UI to show final result and prompt for click.
+        if (instructionText != null)
+        {
+            instructionText.text = GetQualityLabel() + " espresso — click to continue.";
+        }
+
+        if (shotProgressText != null)
+        {
+            shotProgressText.text = "";
+        }
+
+        awaitingFinalClick = true;
+    }
+
+    private void ApplyQualityToShader()
+    {
+        if (qualityDiscRenderer == null)
+        {
+            Debug.LogWarning("EspressoMiniGameController: Quality Disc Renderer not assigned.");
+            return;
+        }
+
+        float quality = requiredShots > 0
+            ? (float)successfulShots / requiredShots
+            : 0f;
+
+        // .material gives us a per-instance copy so we don't mutate the shared asset.
+        qualityDiscRenderer.material.SetFloat(qualityShaderProperty, quality);
+
+        Debug.Log("Applied quality " + quality + " to espresso disc shader.");
+    }
+
+    private string GetQualityLabel()
+    {
+        float q = requiredShots > 0 ? (float)successfulShots / requiredShots : 0f;
+
+        if (q >= 0.75f) return "Great";
+        if (q >= 0.4f)  return "Alright";
+        return "Bad";
+    }
+
+    private void LoadCafe()
+    {
+        if (GameSessionManager.Instance != null)
+        {
+            GameSessionManager.Instance.GoToCafe();
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Cafe");
+        }
     }
 
     private void SpawnEspressoCup()
@@ -303,24 +439,23 @@ public class EspressoMiniGameController : MonoBehaviour
             espressoCupSpawnPoint.position,
             espressoCupSpawnPoint.rotation
         );
+
         if (cupSpawnAudio != null)
-{
-    cupSpawnAudio.Play();
-}
+        {
+            cupSpawnAudio.Play();
+        }
+
+        // Reveal the quality disc now that the cup is in the scene.
+        if (qualityDiscRenderer != null)
+        {
+            qualityDiscRenderer.gameObject.SetActive(true);
+        }
     }
 
     private IEnumerator ReturnToCafeAfterDelay()
     {
         yield return new WaitForSeconds(returnToCafeDelay);
-
-        if (GameSessionManager.Instance != null)
-        {
-            GameSessionManager.Instance.GoToCafe();
-        }
-        else
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Cafe");
-        }
+        LoadCafe();
     }
 
     private void UpdateUI()
