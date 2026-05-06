@@ -743,6 +743,54 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 1234352945357586803, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
   m_PrefabInstance: {fileID: 1503589506207750019}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &77755585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77755587}
+  - component: {fileID: 77755586}
+  m_Layer: 0
+  m_Name: SyrupStation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &77755586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77755585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bc993bde7733c843968ed853dbafa08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapPoint: {fileID: 599849926}
+  screenAcceptRadius: 200
+  placeAudio: {fileID: 509060549}
+--- !u!4 &77755587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77755585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.272, y: 1.758, z: 1.079}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 599849926}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &82198955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1895,6 +1943,8 @@ MonoBehaviour:
   playerCamera: {fileID: 76667496}
   fpsController: {fileID: 0}
   counterDropZone: {fileID: 509060547}
+  syrupStation: {fileID: 77755586}
+  spawnAudio: {fileID: 0}
 --- !u!4 &200799165
 Transform:
   m_ObjectHideFlags: 0
@@ -5198,6 +5248,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595979536}
   m_Mesh: {fileID: 5515877555933215473, guid: 0b31f7bb2dead6d4e80424ecd3394fc4, type: 3}
+--- !u!1 &599849925
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 599849926}
+  m_Layer: 0
+  m_Name: SyrupSnapPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &599849926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599849925}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.042, y: 0.034, z: 0.009}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 77755587}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &611388335
 GameObject:
   m_ObjectHideFlags: 0
@@ -6874,6 +6955,7 @@ MonoBehaviour:
   dragCamera: {fileID: 76667496}
   fpsController: {fileID: 0}
   dropZone: {fileID: 509060547}
+  syrupStation: {fileID: 0}
   dragSmoothness: 25
   disablePlayerMovementWhileDragging: 0
   pickupAudio: {fileID: 871031400}
@@ -16149,3 +16231,4 @@ SceneRoots:
   - {fileID: 638741013}
   - {fileID: 871031394}
   - {fileID: 475359809}
+  - {fileID: 77755587}

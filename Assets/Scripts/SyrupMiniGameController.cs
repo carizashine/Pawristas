@@ -11,7 +11,15 @@ public class SyrupMiniGameController : MonoBehaviour
     [SerializeField] private Transform pourPoint;
     [SerializeField] private Transform streamLeftPoint;
     [SerializeField] private Transform streamRightPoint;
+
+    [Tooltip("Starting jar oscillation speed.")]
     [SerializeField] private float streamSpeed = 1.5f;
+
+    [Tooltip("Lower bound for the random speed re-roll after each burst.")]
+    [SerializeField] private float streamSpeedMin = 0.6f;
+
+    [Tooltip("Upper bound for the random speed re-roll after each burst.")]
+    [SerializeField] private float streamSpeedMax = 2.6f;
 
     [Header("Drop Burst")]
     [Tooltip("Seconds between each burst of drops.")]
@@ -44,6 +52,9 @@ public class SyrupMiniGameController : MonoBehaviour
     [Tooltip("How close (Z axis) a drop must be to the cup center to count as caught.")]
     [SerializeField] private float catchRadius = 0.65f;
 
+    [Tooltip("Y offset above the cup pivot where drops are considered caught. Set this to the cup's rim height so drops disappear AT the rim instead of falling all the way to the cup's center.")]
+    [SerializeField] private float catchYOffset = 0.3f;
+
     [Tooltip("Fill added per caught drop.")]
     [SerializeField] private float fillPerDrop = 0.025f;
 
@@ -55,6 +66,16 @@ public class SyrupMiniGameController : MonoBehaviour
 
     [Tooltip("Local Y of the bottom of the cup interior.")]
     [SerializeField] private float fillBaseY = 0f;
+
+    [Header("Pre-game Countdown")]
+    [Tooltip("Seconds of '3..2..1..GO!' before drops start spawning.")]
+    [SerializeField] private float countdownDuration = 3f;
+
+    [Tooltip("How long 'GO!' lingers on screen before clearing.")]
+    [SerializeField] private float goLingerDuration = 0.5f;
+
+    [Tooltip("Big text element used for the countdown and 'GO!' message.")]
+    [SerializeField] private TextMeshProUGUI countdownText;
 
     [Header("Timer")]
     [Tooltip("Total seconds of spawning. Game ends once this expires AND all drops have landed.")]
@@ -74,12 +95,15 @@ public class SyrupMiniGameController : MonoBehaviour
     private float streamTimer = 0f;
     private float burstTimer = 0f;
     private float timeRemaining;
+    private bool inCountdown = true;
+    private float countdownTimer;
     private bool spawningComplete = false;  // True once timer hits 0
     private bool gameComplete = false;
     private SyrupType currentSyrup;
     private Color syrupColor;
     private int totalSpawned = 0;
     private int totalCaught = 0;
+    private float currentStreamSpeed;       // Re-rolled after each burst.
 
     private readonly List<ActiveDrop> activeDrops = new List<ActiveDrop>();
 
@@ -100,6 +124,11 @@ public class SyrupMiniGameController : MonoBehaviour
         syrupColor = GetSyrupColor(currentSyrup);
         timeRemaining = timerDuration;
 
+        countdownTimer = countdownDuration;
+        inCountdown = countdownDuration > 0f;
+
+        currentStreamSpeed = streamSpeed;
+
         if (jarRenderer != null)
             jarRenderer.material.color = syrupColor;
 
@@ -114,7 +143,9 @@ public class SyrupMiniGameController : MonoBehaviour
             );
 
         if (instructionText != null)
-            instructionText.text = "A / D  —  Move the cup to catch the " + GetSyrupDisplayName(currentSyrup) + " syrup!";
+            instructionText.text = inCountdown
+                ? "Get ready..."
+                : "A / D  —  Move the cup to catch the " + GetSyrupDisplayName(currentSyrup) + " syrup!";
 
         if (feedbackText != null)
             feedbackText.text = "";
@@ -122,12 +153,21 @@ public class SyrupMiniGameController : MonoBehaviour
         if (syrupNameText != null)
             syrupNameText.text = GetSyrupDisplayName(currentSyrup) + " Syrup";
 
+        if (countdownText != null)
+            countdownText.text = inCountdown ? Mathf.CeilToInt(countdownTimer).ToString() : "";
+
         RefreshTimerUI();
     }
 
     private void Update()
     {
         if (gameComplete) return;
+
+        if (inCountdown)
+        {
+            TickCountdown();
+            return;
+        }
 
         MoveJar();
 
@@ -140,6 +180,32 @@ public class SyrupMiniGameController : MonoBehaviour
         UpdateDrops();
     }
 
+    // ── Pre-game countdown ─────────────────────────────────────────────────
+    private void TickCountdown()
+    {
+        countdownTimer -= Time.deltaTime;
+
+        if (countdownText != null)
+        {
+            if (countdownTimer > 0f)
+                countdownText.text = Mathf.CeilToInt(countdownTimer).ToString();
+            else
+                countdownText.text = "GO!";
+        }
+
+        // Linger on "GO!" for a beat, then start the game.
+        if (countdownTimer <= -goLingerDuration)
+        {
+            inCountdown = false;
+
+            if (countdownText != null)
+                countdownText.text = "";
+
+            if (instructionText != null)
+                instructionText.text = "A / D  —  Move the cup to catch the " + GetSyrupDisplayName(currentSyrup) + " syrup!";
+        }
+    }
+
     private void OnDestroy()
     {
         CleanupDrops();
@@ -150,7 +216,7 @@ public class SyrupMiniGameController : MonoBehaviour
     {
         if (jarTransform == null || streamLeftPoint == null || streamRightPoint == null) return;
 
-        streamTimer += Time.deltaTime * streamSpeed;
+        streamTimer += Time.deltaTime * currentStreamSpeed;
         float t = Mathf.PingPong(streamTimer, 1f);
         jarTransform.position = Vector3.Lerp(streamLeftPoint.position, streamRightPoint.position, t);
     }
@@ -236,6 +302,12 @@ public class SyrupMiniGameController : MonoBehaviour
 
             totalSpawned++;
         }
+
+        // Re-roll jar speed for variety so the dropper isn't predictable.
+        // Clamp to avoid degenerate / negative speeds.
+        float min = Mathf.Max(0.05f, streamSpeedMin);
+        float max = Mathf.Max(min, streamSpeedMax);
+        currentStreamSpeed = Random.Range(min, max);
     }
 
     // ── Drop update & catch ────────────────────────────────────────────────
@@ -243,8 +315,9 @@ public class SyrupMiniGameController : MonoBehaviour
     {
         if (cupTransform == null) return;
 
-        float cupY = cupTransform.position.y;
-        float cupZ = cupTransform.position.z;
+        // Catch line is at the cup pivot + offset (i.e. the rim, not the center).
+        float catchY = cupTransform.position.y + catchYOffset;
+        float cupZ   = cupTransform.position.z;
 
         for (int i = activeDrops.Count - 1; i >= 0; i--)
         {
@@ -259,33 +332,42 @@ public class SyrupMiniGameController : MonoBehaviour
             drop.dropTransform.position += Vector3.down * dropFallSpeed * Time.deltaTime;
             drop.lifetime -= Time.deltaTime;
 
-            bool expired = drop.lifetime <= 0f;
-            bool reachedCup = drop.dropTransform.position.y <= cupY;
+            bool expired       = drop.lifetime <= 0f;
+            bool reachedRim    = drop.dropTransform.position.y <= catchY;
+            float distZ        = Mathf.Abs(drop.dropTransform.position.z - cupZ);
+            bool inCatchRange  = reachedRim && distZ <= catchRadius;
+            // If a drop misses laterally, let it keep falling visibly past the cup
+            // before we destroy it — feels much better than vanishing at rim height.
+            bool fellPastCup   = drop.dropTransform.position.y < catchY - catchRadius;
 
-            if (reachedCup || expired)
+            if (inCatchRange)
             {
-                if (reachedCup)
-                {
-                    float distZ = Mathf.Abs(drop.dropTransform.position.z - cupZ);
-                    if (distZ <= catchRadius)
-                    {
-                        totalCaught++;
-                        currentFill = Mathf.Clamp01(currentFill + fillPerDrop);
-                        UpdateFillVisual();
-                    }
-                }
+                // Caught — destroy immediately and credit the player.
+                totalCaught++;
+                currentFill = Mathf.Clamp01(currentFill + fillPerDrop);
+                UpdateFillVisual();
 
                 Destroy(drop.dropTransform.gameObject);
                 activeDrops.RemoveAt(i);
 
-                // Fill target reached — end early.
                 if (currentFill >= targetFill)
                 {
                     FinishMinigame();
                     return;
                 }
 
-                // Spawning finished and this was the last drop — end now.
+                if (spawningComplete && activeDrops.Count == 0)
+                {
+                    FinishMinigame();
+                    return;
+                }
+            }
+            else if (fellPastCup || expired)
+            {
+                // Missed — let it fall past visually, then despawn.
+                Destroy(drop.dropTransform.gameObject);
+                activeDrops.RemoveAt(i);
+
                 if (spawningComplete && activeDrops.Count == 0)
                 {
                     FinishMinigame();

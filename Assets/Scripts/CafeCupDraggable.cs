@@ -10,6 +10,9 @@ public class CafeCupDraggable : MonoBehaviour
     public MonoBehaviour fpsController;
     public CafeCounterDropZone dropZone;
 
+    [Tooltip("Optional. If set, dropping the espresso cup near it triggers the syrup minigame.")]
+    public SyrupStationDropZone syrupStation;
+
     [Header("Drag Settings")]
     public float dragSmoothness = 25f;
 
@@ -124,14 +127,30 @@ public class CafeCupDraggable : MonoBehaviour
     {
         isDragging = false;
 
-        if (dropZone != null && dropZone.IsMouseOverDropZone(dragCamera, Input.mousePosition, itemType))
+        // 1) Check the syrup station first (espresso cups only).
+        bool syrupStationReceived = false;
+
+        if (syrupStation != null &&
+            itemType == CafeItemType.Espresso &&
+            syrupStation.IsMouseOverDropZone(dragCamera, Input.mousePosition))
         {
-            dropZone.ReceiveCup(this);
+            syrupStation.ReceiveCup(this);
+            syrupStationReceived = true;
         }
-        else
+
+        // 2) Otherwise check the pickup counter.
+        if (!syrupStationReceived)
         {
-            Debug.Log(itemType + " was not close enough to the pickup counter.");
-            ResetCup();
+            if (dropZone != null &&
+                dropZone.IsMouseOverDropZone(dragCamera, Input.mousePosition, itemType))
+            {
+                dropZone.ReceiveCup(this);
+            }
+            else
+            {
+                Debug.Log(itemType + " was not dropped on a valid zone — resetting.");
+                ResetCup();
+            }
         }
 
         if (disablePlayerMovementWhileDragging && fpsController != null)
