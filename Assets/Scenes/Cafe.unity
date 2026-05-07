@@ -17534,8 +17534,8 @@ MonoBehaviour:
   maxTapMoveDistance: 35
   parentSearchLevels: 5
   searchChildren: 1
-  promptPanel: {fileID: 0}
-  promptText: {fileID: 0}
+  promptPanel: {fileID: 2093979584}
+  promptText: {fileID: 766162995}
   showDebugLogs: 1
 --- !u!114 &1503589506207750022 stripped
 MonoBehaviour:
