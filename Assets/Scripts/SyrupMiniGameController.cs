@@ -48,6 +48,8 @@ public class SyrupMiniGameController : MonoBehaviour
     [SerializeField] private Transform cupTransform;
     [SerializeField] private Transform fillTransform;
     [SerializeField] private Renderer fillRenderer;
+    [Header("Audio")]
+    [SerializeField] private AudioSource dropCaughtAudio;
 
     [Tooltip("How close (Z axis) a drop must be to the cup center to count as caught.")]
     [SerializeField] private float catchRadius = 0.65f;
@@ -346,6 +348,10 @@ public class SyrupMiniGameController : MonoBehaviour
                 totalCaught++;
                 currentFill = Mathf.Clamp01(currentFill + fillPerDrop);
                 UpdateFillVisual();
+                if (dropCaughtAudio != null)
+                {
+                    dropCaughtAudio.Play();
+                }
 
                 Destroy(drop.dropTransform.gameObject);
                 activeDrops.RemoveAt(i);
