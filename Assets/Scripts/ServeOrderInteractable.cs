@@ -49,6 +49,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
             if (!hasSomethingReady)
             {
                 ShowReactionMessage("There is nothing ready to serve yet!");
+                StartCoroutine(HideReactionAfterDelay());
                 Debug.Log("Cannot serve: nothing on counter.");
                 return;
             }
@@ -276,5 +277,14 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         }
 
         Debug.Log(message);
+    }
+    private IEnumerator HideReactionAfterDelay()
+    {
+        yield return new WaitForSeconds(reactionTime);
+
+        if (reactionPanel != null)
+        {
+            reactionPanel.SetActive(false);
+        }
     }
 }
