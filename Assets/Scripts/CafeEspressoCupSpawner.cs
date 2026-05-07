@@ -2,19 +2,16 @@ using UnityEngine;
 
 public class CafeEspressoCupSpawner : MonoBehaviour
 {
-    [Header("Cup")]
+    //cup
     public GameObject espressoCupPrefab;
     public Transform cupSpawnPoint;
-
-    [Header("Drag Setup")]
     public Camera playerCamera;
     public MonoBehaviour fpsController;
     public CafeCounterDropZone counterDropZone;
 
-    [Tooltip("Optional. The syrup stand drop zone — if assigned, the cup respawns here after the syrup minigame.")]
     public SyrupStationDropZone syrupStation;
 
-    [Header("Audio")]
+    //audio
     [SerializeField] private AudioSource spawnAudio;
 
     private void Start()
@@ -36,14 +33,14 @@ public class CafeEspressoCupSpawner : MonoBehaviour
     {
         if (espressoCupPrefab == null)
         {
-            Debug.LogWarning("CafeEspressoCupSpawner is missing espresso cup prefab.");
+            // Debug.LogWarning("CafeEspressoCupSpawner is missing espresso cup prefab.");
             return;
         }
 
         Transform spawnPoint = cupSpawnPoint;
         bool alreadyPlaced = false;
 
-        // Priority 1: Cup was already placed on the pickup counter.
+        //Cup already placed on the pickup counter
         if (OrderProgressTracker.Instance != null &&
             OrderProgressTracker.Instance.HasPlacedEspressoOnCounter &&
             counterDropZone != null &&
@@ -52,20 +49,18 @@ public class CafeEspressoCupSpawner : MonoBehaviour
             spawnPoint = counterDropZone.GetSnapPoint(CafeItemType.Espresso);
             alreadyPlaced = true;
         }
-        // Priority 2: Syrup minigame is complete — spawn at the syrup stand so
-        // the player can pick the cup up and bring it to the counter.
+        // Syrup minigame is complete, spawn at the syrup stand so the player can pick the cup up and bring it to the counter.
         else if (OrderProgressTracker.Instance != null &&
                  OrderProgressTracker.Instance.HasCompletedSyrup &&
                  syrupStation != null &&
                  syrupStation.snapPoint != null)
         {
             spawnPoint = syrupStation.snapPoint;
-            // alreadyPlaced stays false — we want it draggable.
         }
 
         if (spawnPoint == null)
         {
-            Debug.LogWarning("CafeEspressoCupSpawner is missing spawn point.");
+            // Debug.LogWarning("CafeEspressoCupSpawner is missing spawn point.");
             return;
         }
 
@@ -108,6 +103,6 @@ public class CafeEspressoCupSpawner : MonoBehaviour
             }
         }
 
-        Debug.Log("Spawned espresso cup in Cafe. Already placed: " + alreadyPlaced);
+        // Debug.Log("Spawned espresso cup in Cafe. Already placed: " + alreadyPlaced);
     }
 }

@@ -114,7 +114,7 @@ public class FPSInteract : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log("FPSInteract ray hit: " + hit.collider.name);
+            // Debug.Log("FPSInteract ray hit: " + hit.collider.name);
         }
 
         currentInteractable = FindInteractableFromHit(hit.collider);
@@ -123,7 +123,7 @@ public class FPSInteract : MonoBehaviour
         {
             if (showDebugLogs)
             {
-                Debug.Log("FPSInteract found IInteractable: " + currentInteractable.GetType().Name);
+                // Debug.Log("FPSInteract found IInteractable: " + currentInteractable.GetType().Name);
             }
 
             ShowPrompt(currentInteractable.GetPromptText());
@@ -136,7 +136,7 @@ public class FPSInteract : MonoBehaviour
         {
             if (showDebugLogs)
             {
-                Debug.Log("FPSInteract found LoadScene target: " + currentLoadSceneComponent.GetType().Name);
+                // Debug.Log("FPSInteract found LoadScene target: " + currentLoadSceneComponent.GetType().Name);
             }
 
             ShowPrompt("Click to interact");
@@ -145,7 +145,7 @@ public class FPSInteract : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log("FPSInteract hit " + hit.collider.name + " but found no interact target.");
+            // Debug.Log("FPSInteract hit " + hit.collider.name + " but found no interact target.");
         }
 
         HidePrompt();

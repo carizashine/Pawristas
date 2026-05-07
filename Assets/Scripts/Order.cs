@@ -63,27 +63,21 @@ public class Order
 [System.Serializable]
 public class PlayerOrderResult
 {
-    [Header("Espresso")]
     public bool espressoMade;
 
-    // Old/general field, kept so older scripts do not break.
     public int espressoShots;
 
-    // New timing minigame scoring.
     public int espressoSuccessfulShots;
     public int espressoRequiredShots;
     public float espressoQualityScore;
 
-    [Header("Syrup")]
     public bool syrupMade;
     public SyrupType syrup;
     public float syrupAccuracyScore;
 
-    [Header("Pastry")]
     public bool pastryMade;
     public PastryType pastry;
 
-    // Keep both names so older/newer pastry code still works.
     public float pastryQualityScore;
     public float pastryAccuracyScore;
 }
@@ -97,7 +91,6 @@ public static class OrderGenerator
         "Pumpkin",
         "Biscuit",
         "Chai",
-        "GUAP",
     };
 
     public static Order GenerateRandomOrder()
@@ -109,15 +102,12 @@ public static class OrderGenerator
         order.drinkType = GetRandomEnumValue<DrinkType>();
 
         // 1 to 4 shots.
-        // Unity int Random.Range max is exclusive, so 1, 5 means 1, 2, 3, or 4.
         order.espressoShots = Random.Range(1, 5);
 
         order.syrup = GetRandomEnumValue<SyrupType>();
 
-        // Avoid None for customer pastry orders.
         order.pastry = GetRandomPastry();
 
-        // Gemini fills this when the player clicks the customer.
         // If Gemini fails or is disabled, GetOrderText() uses GetPlainOrderText().
         order.customerOrderDialogue = "";
 

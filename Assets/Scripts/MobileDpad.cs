@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class MobileDPad : MonoBehaviour
 {
-    public static MobileDPad Instance { get; private set; }
 
+    //mobile contorls
+    public static MobileDPad Instance { get; private set; }
     private int horizontal;
     private int vertical;
 

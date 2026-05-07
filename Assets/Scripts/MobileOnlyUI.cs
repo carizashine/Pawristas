@@ -1,3 +1,4 @@
+//mobile specific ui
 using UnityEngine;
 
 public class MobileOnlyUI : MonoBehaviour {

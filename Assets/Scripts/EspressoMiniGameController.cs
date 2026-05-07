@@ -4,55 +4,41 @@ using TMPro;
 
 public class EspressoMiniGameController : MonoBehaviour
 {
-    [Header("Shot Settings")]
+    //shots
     [SerializeField] private int requiredShots = 1;
     [SerializeField] private int currentShotNumber = 1;
     [SerializeField] private int successfulShots = 0;
 
-    [Header("Moving Puck")]
+    //moving espresso puck
     [SerializeField] private Transform movingPuck;
     [SerializeField] private Transform leftPoint;
     [SerializeField] private Transform rightPoint;
     [SerializeField] private float moveSpeed = 4f;
 
-    [Header("Target Zone")]
+    //target area
     [SerializeField] private Transform perfectZonePoint;
     [SerializeField] private Transform successDropPoint;
-
-    [Tooltip("How close the puck must be to the perfect zone. Smaller = stricter.")]
     [SerializeField] private float successRadius = 0.12f;
 
-    [Header("Espresso Cup")]
+    //cup
     [SerializeField] private GameObject espressoCupPrefab;
     [SerializeField] private Transform espressoCupSpawnPoint;
-
     [SerializeField] private AudioSource cupSpawnAudio;
 
-    [Header("Quality Reveal Pan")]
-    [Tooltip("Camera that pans down to reveal the quality. If null, Camera.main is used.")]
+    //espresso quality shader
     [SerializeField] private Camera revealCamera;
-
-    [Tooltip("Where the camera ends up when looking down at the cup. Set this above the cup.")]
     [SerializeField] private Transform panTarget;
-
-    [Tooltip("Renderer of the disc using the EspressoQuality shader. Its material's _Quality property gets driven by the score.")]
     [SerializeField] private Renderer qualityDiscRenderer;
-
-    [Tooltip("Float property name on the shader.")]
     [SerializeField] private string qualityShaderProperty = "_Quality";
-
-    [Tooltip("Pause after the last shot before the camera starts panning.")]
     [SerializeField] private float panStartDelay = 0.7f;
-
-    [Tooltip("How many seconds the pan + rotation takes.")]
     [SerializeField] private float panDuration = 1.6f;
 
-    [Header("Timing")]
+    //timing 
     [SerializeField] private float nextShotDelay = 0.7f;
-    [Tooltip("Legacy fallback — only used when no Pan Target is assigned.")]
     [SerializeField] private float returnToCafeDelay = 1.4f;
     [SerializeField] private float dropAnimationTime = 0.35f;
-    [Header("Audio")]
+
+    //audio
     [SerializeField] private AudioSource successAudio;
     [SerializeField] private AudioSource failAudio;
 
@@ -92,20 +78,20 @@ public class EspressoMiniGameController : MonoBehaviour
         ResetPuckToStart();
         UpdateUI();
 
-        // Hide the quality disc until the cup spawns at the end of the minigame.
+        //Hide the quality disc until  cup spawns at  end of the minigame.
         if (qualityDiscRenderer != null)
         {
             qualityDiscRenderer.gameObject.SetActive(false);
         }
 
-        Debug.Log("Espresso timing game started. Required shots: " + requiredShots);
+        // Debug.Log("Espresso timing game started. Required shots: " + requiredShots);
     }
 
     private void Update()
     {
         if (minigameFinished)
         {
-            // After the pan completes we wait for a click to leave the scene.
+            // After pan completes, wait for a click to leave the scene.
             if (awaitingFinalClick && Input.GetMouseButtonDown(0))
             {
                 awaitingFinalClick = false;
@@ -136,16 +122,17 @@ public class EspressoMiniGameController : MonoBehaviour
         requiredShots = Mathf.Clamp(requiredShots, 1, 4);
     }
 
+    //move puck left and right
     private void MovePuck()
     {
         if (movingPuck == null || leftPoint == null || rightPoint == null)
         {
-            Debug.LogWarning(
-                "Espresso timing minigame cannot move puck. " +
-                "MovingPuck: " + movingPuck +
-                ", LeftPoint: " + leftPoint +
-                ", RightPoint: " + rightPoint
-            );
+            // Debug.LogWarning(
+            //     "Espresso timing minigame cannot move puck. " +
+            //     "MovingPuck: " + movingPuck +
+            //     ", LeftPoint: " + leftPoint +
+            //     ", RightPoint: " + rightPoint
+            // );
             return;
         }
 
@@ -160,11 +147,12 @@ public class EspressoMiniGameController : MonoBehaviour
         );
     }
 
+    //drop puck
     private void TryDropPuck()
     {
         if (movingPuck == null || perfectZonePoint == null)
         {
-            Debug.LogWarning("EspressoMiniGameController: Moving puck or target zone is missing.");
+            // Debug.LogWarning("EspressoMiniGameController: Moving puck or target zone is missing.");
             return;
         }
 
@@ -178,7 +166,7 @@ public class EspressoMiniGameController : MonoBehaviour
 
         bool landed = distance <= successRadius;
 
-        Debug.Log("Shot attempt distance from perfect zone: " + distance + " / required: " + successRadius);
+        // Debug.Log("Shot attempt distance from perfect zone: " + distance + " / required: " + successRadius);
 
         if (landed)
         {
@@ -193,7 +181,7 @@ public class EspressoMiniGameController : MonoBehaviour
                 feedbackText.text = "Perfect shot!";
             }
 
-            Debug.Log("Espresso shot landed. Score: " + successfulShots + " / " + requiredShots);
+            // Debug.Log("Espresso shot landed. Score: " + successfulShots + " / " + requiredShots);
 
             UpdateUI();
 
@@ -210,13 +198,14 @@ public class EspressoMiniGameController : MonoBehaviour
             failAudio.Play();
         }
 
-        Debug.Log("Espresso shot missed. Score: " + successfulShots + " / " + requiredShots);
+        // Debug.Log("Espresso shot missed. Score: " + successfulShots + " / " + requiredShots);
 
         UpdateUI();
 
         StartCoroutine(GoToNextShotOrFinish());
     }
 
+    //drop puck and continue game
     private IEnumerator AnimatePuckDropThenContinue()
     {
         if (movingPuck == null || successDropPoint == null)
@@ -247,6 +236,7 @@ public class EspressoMiniGameController : MonoBehaviour
         yield return GoToNextShotOrFinish();
     }
 
+    //determine if game finished
     private IEnumerator GoToNextShotOrFinish()
     {
         yield return new WaitForSeconds(nextShotDelay);
@@ -272,6 +262,7 @@ public class EspressoMiniGameController : MonoBehaviour
         UpdateUI();
     }
 
+    //reset puck at starting point
     private void ResetPuckToStart()
     {
         movementTimer = 0f;
@@ -282,6 +273,7 @@ public class EspressoMiniGameController : MonoBehaviour
         }
     }
 
+    //game finished
     private void FinishEspressoMinigame()
     {
         minigameFinished = true;
@@ -301,7 +293,7 @@ public class EspressoMiniGameController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EspressoMiniGameController: GameSessionManager not found.");
+            // Debug.LogWarning("EspressoMiniGameController: GameSessionManager not found.");
         }
 
         if (OrderProgressTracker.Instance != null)
@@ -310,7 +302,7 @@ public class EspressoMiniGameController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EspressoMiniGameController: OrderProgressTracker not found.");
+            // Debug.LogWarning("EspressoMiniGameController: OrderProgressTracker not found.");
         }
 
         if (feedbackText != null)
@@ -332,6 +324,7 @@ public class EspressoMiniGameController : MonoBehaviour
         }
     }
 
+    //look at shader
     private IEnumerator PanAndRevealQuality()
     {
         yield return new WaitForSeconds(panStartDelay);
@@ -346,11 +339,10 @@ public class EspressoMiniGameController : MonoBehaviour
 
         if (revealCamera != null && panTarget != null)
         {
-            Vector3 startPos    = revealCamera.transform.position;
+            Vector3 startPos = revealCamera.transform.position;
             Quaternion startRot = revealCamera.transform.rotation;
 
-            Vector3 endPos    = panTarget.position;
-            // Look straight down (X = 90), keep current Y/Z so framing feels consistent.
+            Vector3 endPos = panTarget.position;
             Quaternion endRot = Quaternion.Euler(
                 90f,
                 revealCamera.transform.eulerAngles.y,
@@ -391,7 +383,7 @@ public class EspressoMiniGameController : MonoBehaviour
     {
         if (qualityDiscRenderer == null)
         {
-            Debug.LogWarning("EspressoMiniGameController: Quality Disc Renderer not assigned.");
+            // Debug.LogWarning("EspressoMiniGameController: Quality Disc Renderer not assigned.");
             return;
         }
 
@@ -402,7 +394,7 @@ public class EspressoMiniGameController : MonoBehaviour
         // .material gives us a per-instance copy so we don't mutate the shared asset.
         qualityDiscRenderer.material.SetFloat(qualityShaderProperty, quality);
 
-        Debug.Log("Applied quality " + quality + " to espresso disc shader.");
+        // Debug.Log("Applied quality " + quality + " to espresso disc shader.");
     }
 
     private string GetQualityLabel()
@@ -414,6 +406,7 @@ public class EspressoMiniGameController : MonoBehaviour
         return "Bad";
     }
 
+    //load cafe again
     private void LoadCafe()
     {
         if (GameSessionManager.Instance != null)
@@ -426,11 +419,12 @@ public class EspressoMiniGameController : MonoBehaviour
         }
     }
 
+    //spawn cup on counter
     private void SpawnEspressoCup()
     {
         if (espressoCupPrefab == null || espressoCupSpawnPoint == null)
         {
-            Debug.LogWarning("EspressoMiniGameController: Espresso cup prefab or spawn point is missing.");
+            // Debug.LogWarning("EspressoMiniGameController: Espresso cup prefab or spawn point is missing.");
             return;
         }
 

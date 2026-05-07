@@ -3,7 +3,7 @@ using TMPro;
 
 public class OrderDisplayUI : MonoBehaviour
 {
-    [Header("UI")]
+    //components of display
     [SerializeField] private GameObject orderPanel;
     [SerializeField] private TextMeshProUGUI customerNameText;
     [SerializeField] private TextMeshProUGUI orderText;
@@ -17,7 +17,7 @@ public class OrderDisplayUI : MonoBehaviour
     {
         if (GameSessionManager.Instance == null)
         {
-            Debug.LogError("OrderDisplayUI: GameSessionManager not found.");
+            // Debug.LogError("OrderDisplayUI: GameSessionManager not found.");
             return;
         }
 
@@ -60,7 +60,7 @@ public class OrderDisplayUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        Debug.Log("Order taken.");
+        // Debug.Log("Order taken.");
     }
 
     public void HideOrder()

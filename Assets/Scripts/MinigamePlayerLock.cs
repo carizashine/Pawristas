@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MinigamePlayerLock : MonoBehaviour
 {
-    [Header("Scripts To Disable")]
+    //disable lock
     [SerializeField] private MonoBehaviour fpsController;
     [SerializeField] private MonoBehaviour fpsInteract;
 

@@ -1,3 +1,4 @@
+//interface for interactions
 public interface IInteractable
 {
     string GetPromptText();

@@ -6,13 +6,11 @@ using UnityEngine.Networking;
 
 public class GeminiDialogueClient : MonoBehaviour
 {
-    [Header("Gemini")]
-    [Tooltip("Prototype only. Do not commit a real API key or ship it in a public build.")]
+
     [SerializeField] private string apiKey = "PASTE_YOUR_GEMINI_API_KEY_HERE";
 
     [SerializeField] private string model = "gemini-2.5-flash";
 
-    [Header("Request Settings")]
     [SerializeField] private float timeoutSeconds = 10f;
 
     [Serializable]

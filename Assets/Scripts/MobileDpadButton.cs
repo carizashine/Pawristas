@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+//dpad directions
 public enum DPadButtonDirection
 {
     Forward,
@@ -9,6 +10,7 @@ public enum DPadButtonDirection
     Right
 }
 
+//dpad buttons
 public class MobileDPadButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     public DPadButtonDirection direction;
@@ -17,7 +19,7 @@ public class MobileDPadButton : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     {
         if (MobileDPad.Instance == null)
         {
-            Debug.LogWarning("MobileDPadButton: No MobileDPad found in scene.");
+            // Debug.LogWarning("MobileDPadButton: No MobileDPad found in scene.");
             return;
         }
 
