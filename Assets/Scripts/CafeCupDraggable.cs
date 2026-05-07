@@ -17,7 +17,7 @@ public class CafeCupDraggable : MonoBehaviour
     public SyrupStationDropZone syrupStation;
 
     [Header("Drag Settings")]
-    public float dragSmoothness = 25f;
+    public float dragSmoothness = 8f;
 
     [Header("Player Movement")]
     public bool disablePlayerMovementWhileDragging = false;

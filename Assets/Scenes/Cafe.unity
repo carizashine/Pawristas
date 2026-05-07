@@ -17435,7 +17435,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1912362778220159713, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
       propertyPath: mobileLookSensitivity
-      value: 0.25
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3056438790279700698, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
       propertyPath: m_Name
