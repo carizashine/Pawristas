@@ -218,6 +218,17 @@ public class GeminiDialogueClient : MonoBehaviour
 
     private string BuildReactionPrompt(Order order, PlayerOrderResult result, int finalScore)
     {
+        string themeName = "Cozy Cafe Day";
+        string themeDescription = "Customers are friendly and cozy.";
+        string moodText = "warm and cheerful";
+
+        if (GameSessionManager.Instance != null && GameSessionManager.Instance.CurrentCafeTheme != null)
+        {
+            themeName = GameSessionManager.Instance.CurrentCafeTheme.themeName;
+            themeDescription = GameSessionManager.Instance.CurrentCafeTheme.themeDescription;
+            moodText = GameSessionManager.Instance.CurrentCafeTheme.mood;
+        }
+
         string mood =
             finalScore >= 90 ? "very happy" :
             finalScore >= 70 ? "happy" :
@@ -247,6 +258,13 @@ public class GeminiDialogueClient : MonoBehaviour
             result.espressoSuccessfulShots + "/" + result.espressoRequiredShots + " espresso shots, " +
             "syrupMade=" + result.syrupMade + ", syrup=" + result.syrup + ", " +
             "pastryMade=" + result.pastryMade + ", pastry=" + result.pastry + ".\n" +
+
+            "Daily cafe theme: " + themeName + " - " + themeDescription + "\n" +
+            "Theme mood: " + moodText + "\n" +
+            "Customer name: " + order.customerName + "\n" +
+            "Animal type: " + order.animalType + "\n" +
+            "Personality: " + order.personality + "\n" +
+            "Speaking style: " + order.speakingStyle + "\n\n" +
 
             "Write the customer reaction now:";
     }
@@ -373,5 +391,156 @@ public class GeminiDialogueClient : MonoBehaviour
         }
 
         return "Oh dear, I do not think this is what I ordered.";
+    }
+
+    private string CleanJson(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return "";
+        }
+
+        text = text.Trim();
+
+        text = text.Replace("```json", "");
+        text = text.Replace("```", "");
+
+        int firstBrace = text.IndexOf('{');
+        int lastBrace = text.LastIndexOf('}');
+
+        if (firstBrace >= 0 && lastBrace > firstBrace)
+        {
+            text = text.Substring(firstBrace, lastBrace - firstBrace + 1);
+        }
+
+        return text.Trim();
+    }
+
+    private bool IsUsableJson(string text)
+    {
+        return !string.IsNullOrWhiteSpace(text) &&
+        text.Contains("{") &&
+        text.Contains("}");
+    }
+
+    public IEnumerator GenerateDailyTheme(Action<CafeTheme> onComplete)
+    {
+        string prompt =
+            "Generate one dialogue-only daily cafe theme for a cozy animal cafe game called Pawristas.\n" +
+            "The theme must affect only customer names, personalities, order dialogue, and reaction dialogue.\n" +
+            "Do not mention decorations, scene changes, props, lighting, outfits, weather effects, or objects changing.\n\n" +
+            "Choose a theme similar to these examples:\n" +
+            "- Sleepy Monday Rush\n" +
+            "- Cozy Study Session\n" +
+            "- Tiny Celebration Day\n" +
+            "- Treat Yourself Tuesday\n" +
+            "- Chaotic Espresso Hour\n" +
+            "- Pastry Panic\n" +
+            "- Caffeine Emergency\n" +
+            "- Fancy Furball Day\n" +
+            "- Grumpy but Lovable Day\n" +
+            "- Drama Club Cafe\n\n" +
+            "Return only JSON in this exact format:\n" +
+            "{\n" +
+            "  \"themeName\": \"\",\n" +
+            "  \"themeDescription\": \"\",\n" +
+            "  \"mood\": \"\"\n" +
+            "}";
+
+        yield return StartCoroutine(SendGeminiRequest(
+            prompt,
+            "{\"themeName\":\"Cozy Cafe Day\",\"themeDescription\":\"Customers are friendly, cozy, and excited for drinks and pastries.\",\"mood\":\"warm, cheerful, relaxed\"}",
+            CleanJson,
+            IsUsableJson,
+            text =>
+            {
+                CafeTheme theme = JsonUtility.FromJson<CafeTheme>(text);
+
+                if (theme == null || string.IsNullOrWhiteSpace(theme.themeName))
+                {
+                    theme = new CafeTheme
+                    {
+                        themeName = "Cozy Cafe Day",
+                        themeDescription = "Customers are friendly, cozy, and excited for drinks and pastries.",
+                        mood = "warm, cheerful, relaxed"
+                    };
+                }
+
+                onComplete?.Invoke(theme);
+            }
+        ));
+    }
+
+    public IEnumerator GenerateCustomerProfile(CafeTheme theme, Order order, Action<CustomerProfile> onComplete)
+    {
+        if (order == null)
+        {
+            onComplete?.Invoke(null);
+            yield break;
+        }
+
+        string syrupText = order.syrup == SyrupType.None ? "no syrup" : order.syrup + " syrup";
+
+        string themeName = theme != null ? theme.themeName : "Cozy Cafe Day";
+        string themeDescription = theme != null ? theme.themeDescription : "Customers are friendly and cozy.";
+        string mood = theme != null ? theme.mood : "warm, cheerful";
+
+        string prompt =
+            "Generate a customer profile for a cozy animal cafe game called Pawristas.\n\n" +
+            "Daily cafe theme:\n" +
+            themeName + " - " + themeDescription + "\n" +
+            "Mood: " + mood + "\n\n" +
+            "Customer order:\n" +
+            "Drink: " + order.drinkType + "\n" +
+            "Espresso shots: " + order.espressoShots + "\n" +
+            "Syrup: " + syrupText + "\n" +
+            "Pastry: " + order.pastry + "\n\n" +
+            "Return only JSON in this exact format:\n" +
+            "{\n" +
+            "  \"name\": \"\",\n" +
+            "  \"animalType\": \"\",\n" +
+            "  \"personality\": \"\",\n" +
+            "  \"speakingStyle\": \"\",\n" +
+            "  \"orderDialogue\": \"\"\n" +
+            "}\n\n" +
+            "Rules:\n" +
+            "- The orderDialogue must clearly include the exact drink, espresso shots, syrup, and pastry.\n" +
+            "- Keep orderDialogue under 25 words.\n" +
+            "- Match the daily theme through wording and personality only.\n" +
+            "- Do not mention decorations, props, lighting, costumes, weather effects, or scene changes.\n" +
+            "- Do not add extra order items.\n" +
+            "- Use a playful animal cafe name.";
+
+        string fallbackJson =
+            "{\"name\":\"" + order.customerName + "\"," +
+            "\"animalType\":\"cat\"," +
+            "\"personality\":\"friendly and cozy\"," +
+            "\"speakingStyle\":\"polite and cheerful\"," +
+            "\"orderDialogue\":\"" + GetFallbackOrderDialogue(order).Replace("\"", "") + "\"}";
+
+        yield return StartCoroutine(SendGeminiRequest(
+            prompt,
+            fallbackJson,
+            CleanJson,
+            IsUsableJson,
+            text =>
+            {
+                CustomerProfile profile = JsonUtility.FromJson<CustomerProfile>(text);
+
+                if (profile == null || string.IsNullOrWhiteSpace(profile.orderDialogue))
+                {
+                    profile = new CustomerProfile
+                    {
+                        name = order.customerName,
+                        animalType = "cat",
+                        personality = "friendly and cozy",
+                        speakingStyle = "polite and cheerful",
+                        orderDialogue = GetFallbackOrderDialogue(order)
+                    };
+                }
+
+                onComplete?.Invoke(profile);
+            }
+        ));
     }
 }

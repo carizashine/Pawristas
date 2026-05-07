@@ -31,13 +31,26 @@ public class OrderDisplayUI : MonoBehaviour
 
         if (customerNameText != null)
         {
-            customerNameText.text = order.customerName;
+            if (!string.IsNullOrWhiteSpace(order.animalType))
+            {
+                customerNameText.text = order.customerName + " the " + order.animalType;
+            }
+            else
+            {
+                customerNameText.text = order.customerName;
+            }        
         }
 
         if (orderText != null)
         {
-            orderText.text = order.GetOrderText();
-        }
+            orderText.text =
+                order.GetOrderText() +
+                "\n\nOrder Summary:\n" +
+                order.drinkType + " · " +
+                order.espressoShots + " shot(s) · " +
+                order.syrup + " syrup · " +
+                order.pastry;       
+         }
 
         if (orderPanel != null)
         {

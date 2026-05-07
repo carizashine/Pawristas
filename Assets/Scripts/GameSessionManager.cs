@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 public class GameSessionManager : MonoBehaviour
 {
     public static GameSessionManager Instance { get; private set; }
+    public CafeTheme CurrentCafeTheme { get; private set; }
+    public bool HasShownDailyTheme { get; private set; }
 
     public Order CurrentOrder { get; private set; }
     public PlayerOrderResult PlayerResult { get; private set; }
@@ -18,6 +20,11 @@ public class GameSessionManager : MonoBehaviour
 
     private void Awake()
     {
+        if (CurrentCafeTheme == null)
+        {
+            CurrentCafeTheme = GetFallbackTheme();
+        }
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -255,5 +262,25 @@ public class GameSessionManager : MonoBehaviour
     public void GoToRating()
     {
         LoadScene(ratingScene);
+    }
+
+    public void SetCafeTheme(CafeTheme theme)
+    {
+    CurrentCafeTheme = theme;
+    }
+
+    private CafeTheme GetFallbackTheme()
+    {
+        return new CafeTheme
+        {
+            themeName = "Cozy Cafe Day",
+            themeDescription = "Customers are friendly, cozy, and excited for drinks and pastries.",
+            mood = "warm, cheerful, relaxed"
+        };
+    }
+
+    public void MarkDailyThemeShown()
+    {
+        HasShownDailyTheme = true;
     }
 }

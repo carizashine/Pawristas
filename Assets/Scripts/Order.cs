@@ -31,6 +31,9 @@ public enum PastryType
 public class Order
 {
     public string customerName;
+    public string animalType;
+    public string personality;
+    public string speakingStyle;
 
     public DrinkType drinkType;
     public int espressoShots;

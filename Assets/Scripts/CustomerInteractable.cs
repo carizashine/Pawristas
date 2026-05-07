@@ -56,9 +56,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
 
         Order currentOrder = GameSessionManager.Instance.CurrentOrder;
 
-        if (useAIOrderDialogue &&
-            currentOrder != null &&
-            string.IsNullOrWhiteSpace(currentOrder.customerOrderDialogue))
+        if (useAIOrderDialogue && currentOrder != null && string.IsNullOrWhiteSpace(currentOrder.customerOrderDialogue))
         {
             if (geminiDialogueClient == null)
             {
@@ -67,12 +65,27 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
 
             if (geminiDialogueClient != null)
             {
+                CafeTheme theme = null;
+
+                if (GameSessionManager.Instance != null)
+                {
+                    theme = GameSessionManager.Instance.CurrentCafeTheme;
+                }
+
                 yield return StartCoroutine(
-                    geminiDialogueClient.GenerateOrderDialogue(
+                    geminiDialogueClient.GenerateCustomerProfile(
+                        theme,
                         currentOrder,
-                        generatedDialogue =>
+                        profile =>
                         {
-                            currentOrder.customerOrderDialogue = generatedDialogue;
+                            if (profile != null)
+                            {
+                                currentOrder.customerName = profile.name;
+                                currentOrder.animalType = profile.animalType;
+                                currentOrder.personality = profile.personality;
+                                currentOrder.speakingStyle = profile.speakingStyle;
+                                currentOrder.customerOrderDialogue = profile.orderDialogue;
+                            }
                         }
                     )
                 );
@@ -111,4 +124,5 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
 
         isOpeningOrder = false;
     }
+
 }
