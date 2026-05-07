@@ -8,6 +8,14 @@ public class SyrupMiniGameController : MonoBehaviour
     [Header("Jar")]
     [SerializeField] private Transform jarTransform;
     [SerializeField] private Renderer jarRenderer;
+
+    [Tooltip("Which material slot on the jar renderer to tint with the syrup color. -1 tints every material slot. Use a specific index (0, 1, 2...) when your jar has multiple materials and only the body should change color.")]
+    [SerializeField] private int jarMaterialIndex = -1;
+
+    [Tooltip("How strongly the syrup color stains the jar. 0 = jar keeps its original look, 1 = full replace (old behavior). Use a partial value (~0.3-0.5) when the jar uses a textured material so the design shows through.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float jarTintStrength = 0.5f;
+
     [SerializeField] private Transform pourPoint;
     [SerializeField] private Transform streamLeftPoint;
     [SerializeField] private Transform streamRightPoint;
@@ -43,6 +51,9 @@ public class SyrupMiniGameController : MonoBehaviour
 
     [Tooltip("Height (Y scale) of each drop. Larger than width gives the elongated liquid look.")]
     [SerializeField] private float dropHeight = 0.15f;
+
+    [Tooltip("Material applied to each spawned drop. Assign one using the Custom/SyrupDrop shader for the shiny look. If null, the default sphere material is used.")]
+    [SerializeField] private Material dropMaterial;
 
     [Header("Cup & Fill")]
     [SerializeField] private Transform cupTransform;
@@ -131,8 +142,7 @@ public class SyrupMiniGameController : MonoBehaviour
 
         currentStreamSpeed = streamSpeed;
 
-        if (jarRenderer != null)
-            jarRenderer.material.color = syrupColor;
+        TintJar();
 
         if (fillRenderer != null)
             fillRenderer.material.color = syrupColor;
@@ -282,17 +292,25 @@ public class SyrupMiniGameController : MonoBehaviour
             Renderer r = drop.GetComponent<Renderer>();
             if (r != null)
             {
-                // Copy the primitive's existing material so the correct shader is used
-                // regardless of whether the project uses Built-in, URP, or HDRP.
-                Material mat = new Material(r.sharedMaterial);
+                // Prefer the user-assigned drop material (Custom/SyrupDrop) for the
+                // shiny look. Fall back to the primitive's default material so the
+                // game still works if no material is assigned.
+                Material mat = dropMaterial != null
+                    ? new Material(dropMaterial)
+                    : new Material(r.sharedMaterial);
+
                 float brightness = Random.Range(0.88f, 1.06f);
                 Color c = syrupColor;
-                mat.color = new Color(
+                Color tinted = new Color(
                     Mathf.Clamp01(c.r * brightness),
                     Mathf.Clamp01(c.g * brightness),
                     Mathf.Clamp01(c.b * brightness),
                     1f
                 );
+
+                // .color maps to _Color on both built-in Standard and our custom shader.
+                mat.color = tinted;
+
                 r.material = mat;
             }
 
@@ -460,6 +478,67 @@ public class SyrupMiniGameController : MonoBehaviour
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────
+    private void TintJar()
+    {
+        if (jarRenderer == null) return;
+
+        // Blend white with the syrup color so a textured base map keeps its
+        // darker design (cap, accents, ring) while picking up a hue from syrup.
+        // tintStrength = 0  → fully white (no tint, multiplied texture stays as-is)
+        // tintStrength = 1  → fully syrup color (old replace behavior)
+        Color tinted = Color.Lerp(Color.white, syrupColor, jarTintStrength);
+
+        // .materials returns per-instance copies, so we don't mutate the shared
+        // asset on disk. Mutating these is safe.
+        Material[] mats = jarRenderer.materials;
+
+        if (jarMaterialIndex < 0)
+        {
+            // Tint every material slot.
+            for (int i = 0; i < mats.Length; i++)
+            {
+                ApplyTintColor(mats[i], tinted);
+            }
+        }
+        else if (jarMaterialIndex < mats.Length)
+        {
+            // Tint only the chosen slot — leaves cap, accents, etc. untouched.
+            ApplyTintColor(mats[jarMaterialIndex], tinted);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "SyrupMiniGameController: jarMaterialIndex " + jarMaterialIndex +
+                " is out of range. Renderer has " + mats.Length + " material(s)."
+            );
+        }
+
+        jarRenderer.materials = mats;
+    }
+
+    // URP/Lit uses _BaseColor; built-in Standard uses _Color; a few stylized
+    // shaders use _MainColor. Set whichever ones the material exposes so the
+    // tint always lands.
+    private static void ApplyTintColor(Material mat, Color color)
+    {
+        if (mat == null) return;
+
+        if (mat.HasProperty("_BaseColor"))
+        {
+            mat.SetColor("_BaseColor", color);
+        }
+
+        if (mat.HasProperty("_Color"))
+        {
+            mat.SetColor("_Color", color);
+        }
+
+        if (mat.HasProperty("_MainColor"))
+        {
+            mat.SetColor("_MainColor", color);
+        }
+    }
+
     private Color GetSyrupColor(SyrupType syrup)
     {
         switch (syrup)

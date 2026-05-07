@@ -2780,6 +2780,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jarTransform: {fileID: 378795784}
   jarRenderer: {fileID: 378795782}
+  jarMaterialIndex: -1
   pourPoint: {fileID: 2025114135}
   streamLeftPoint: {fileID: 283361929}
   streamRightPoint: {fileID: 1332286232}
@@ -2793,6 +2794,7 @@ MonoBehaviour:
   dropSpread: 0
   dropWidth: 0.06
   dropHeight: 0.15
+  dropMaterial: {fileID: 2100000, guid: e262dd9701c3b9847a6ff93b95969dcc, type: 2}
   cupTransform: {fileID: 745372319}
   fillTransform: {fileID: 1059503267}
   fillRenderer: {fileID: 1059503269}
