@@ -3783,6 +3783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: DrinkRating
+  savePlayerReturnPosition: 1
 --- !u!4 &623593515 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4109101165490198, guid: 2e244810fcf8442c2ae5cd7b1f494341, type: 3}
@@ -5042,6 +5043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: SyrupMinigame
+  savePlayerReturnPosition: 1
 --- !u!65 &950741495
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5239,8 +5241,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c7b31bfbbe1302d49801604e06b58f99, type: 2}
+  m_sharedMaterial: {fileID: 1186807007174113029, guid: c7b31bfbbe1302d49801604e06b58f99, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5917,6 +5919,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: DrinkRating
+  savePlayerReturnPosition: 1
 --- !u!1 &1098328632
 GameObject:
   m_ObjectHideFlags: 0
@@ -6239,6 +6242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742da32bc27c143c09fe3aa4072d37fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderPanel: {fileID: 0}
   customerNameText: {fileID: 956738379}
   orderText: {fileID: 1645229223}
 --- !u!4 &1175066490
@@ -6582,6 +6586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: SyrupMinigame
+  savePlayerReturnPosition: 1
 --- !u!1 &1240192700 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6104819879134182367, guid: 4f28af47bbd470f44a8c8e74c8ba7cff, type: 3}
@@ -6626,6 +6631,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: SyrupMinigame
+  savePlayerReturnPosition: 1
 --- !u!1001 &1264889081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7848,6 +7854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: DrinkRating
+  savePlayerReturnPosition: 1
 --- !u!1 &1432253594
 GameObject:
   m_ObjectHideFlags: 0
@@ -8452,6 +8459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: PastryMinigame
+  savePlayerReturnPosition: 1
 --- !u!65 &1527426412
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8834,8 +8842,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c7b31bfbbe1302d49801604e06b58f99, type: 2}
+  m_sharedMaterial: {fileID: 1186807007174113029, guid: c7b31bfbbe1302d49801604e06b58f99, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9284,6 +9292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: TakingOrder
+  savePlayerReturnPosition: 1
 --- !u!65 &1668370322
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9891,6 +9900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: DrinkRating
+  savePlayerReturnPosition: 1
 --- !u!1 &1827337314
 GameObject:
   m_ObjectHideFlags: 0
@@ -11323,6 +11333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: SyrupMinigame
+  savePlayerReturnPosition: 1
 --- !u!65 &2017590345
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11425,6 +11436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: EspressoMinigame
+  savePlayerReturnPosition: 1
 --- !u!65 &2018040814
 BoxCollider:
   m_ObjectHideFlags: 0
