@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Defines plate area where pastries can be dragged and dropped during minigame
 public class PastryPlateDropZone : MonoBehaviour
 {
     [Header("References")]
@@ -20,6 +21,7 @@ public class PastryPlateDropZone : MonoBehaviour
         }
     }
 
+    // Checks whether dragged pastry is close enough to drop zone
     public bool IsPastryInside(Collider pastryCollider)
     {
         if (pastryCollider == null)
@@ -39,6 +41,7 @@ public class PastryPlateDropZone : MonoBehaviour
         return distance <= acceptRadius;
     }
 
+    // Called when pastry is released over the plate
     public bool ReceivePastry(PastryDraggable pastry)
     {
         if (pastryController == null)
@@ -77,6 +80,7 @@ public class PastryPlateDropZone : MonoBehaviour
         return true;
     }
 
+    // Draws accepted drop radius
     private void OnDrawGizmosSelected()
     {
         Transform center = snapPoint != null ? snapPoint : transform;

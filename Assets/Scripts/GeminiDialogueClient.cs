@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// Handles communication with API key to generate dialogue
 public class GeminiDialogueClient : MonoBehaviour
 {
 
@@ -13,6 +14,7 @@ public class GeminiDialogueClient : MonoBehaviour
 
     [SerializeField] private float timeoutSeconds = 10f;
 
+    // Request body format expected by Gemini's generateContent endpoint
     [Serializable]
     private class GeminiRequest
     {
@@ -26,12 +28,14 @@ public class GeminiDialogueClient : MonoBehaviour
         public Part[] parts;
     }
 
+    // Represents a piece of text inside a content block
     [Serializable]
     private class Part
     {
         public string text;
     }
 
+    // Controls how Gemini generates its response
     [Serializable]
     private class GenerationConfig
     {
@@ -46,6 +50,7 @@ public class GeminiDialogueClient : MonoBehaviour
         public int thinkingBudget = 0;
     }
 
+    // Top-level response format returned by Gemini
     [Serializable]
     private class GeminiResponse
     {
@@ -59,6 +64,7 @@ public class GeminiDialogueClient : MonoBehaviour
         public string finishReason;
     }
 
+    // Generates a customer's spoken order using the current Order data
     public IEnumerator GenerateOrderDialogue(Order order, Action<string> onComplete)
     {
         if (order == null)
@@ -78,6 +84,7 @@ public class GeminiDialogueClient : MonoBehaviour
         ));
     }
 
+    // Generates the customer's reaction after the player serves the order
     public IEnumerator GenerateReactionDialogue(
         Order order,
         PlayerOrderResult result,
@@ -102,6 +109,7 @@ public class GeminiDialogueClient : MonoBehaviour
         ));
     }
 
+    // Sends a prompt to Gemini, cleans the response, validates it
     private IEnumerator SendGeminiRequest(
         string prompt,
         string fallback,
@@ -187,6 +195,7 @@ public class GeminiDialogueClient : MonoBehaviour
         onComplete?.Invoke(text);
     }
 
+    // Creates the prompt used for customer order dialogue
     private string BuildOrderPrompt(Order order)
     {
         string syrupText = order.syrup == SyrupType.None
@@ -214,8 +223,10 @@ public class GeminiDialogueClient : MonoBehaviour
             "Customer order line:";
     }
 
+    // Creates the prompt used for the customer's final reaction dialogue
     private string BuildReactionPrompt(Order order, PlayerOrderResult result, int finalScore)
     {
+        // Pick a mood label based on the final score
         string mood =
             finalScore >= 90 ? "very happy" :
             finalScore >= 70 ? "happy" :
@@ -249,6 +260,7 @@ public class GeminiDialogueClient : MonoBehaviour
             "Write the customer reaction now:";
     }
 
+    // Pulls the generated text out of Gemini's JSON response
     private string TryExtractText(string json)
     {
         try
@@ -281,6 +293,7 @@ public class GeminiDialogueClient : MonoBehaviour
         }
     }
 
+    // Cleans up Gemini output so only the actual dialogue remains
     private string CleanDialogue(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -303,6 +316,7 @@ public class GeminiDialogueClient : MonoBehaviour
         return text.Trim();
     }
 
+    // Checks whether the generated dialogue is long enough to be useful
     private bool IsUsableDialogue(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -336,6 +350,7 @@ public class GeminiDialogueClient : MonoBehaviour
         return true;
     }
 
+    // Backup order line used when Gemini is unavailable or returns invalid text
     private string GetFallbackOrderDialogue(Order order)
     {
         string syrupText = order.syrup == SyrupType.None
@@ -353,6 +368,7 @@ public class GeminiDialogueClient : MonoBehaviour
                "?";
     }
 
+    // Backup reaction text used when Gemini is unavailable or returns invalid text
     private string GetFallbackReaction(int finalScore)
     {
         if (finalScore >= 90)

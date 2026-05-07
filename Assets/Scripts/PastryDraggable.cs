@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Makes pastry draggable during minigame
 public class PastryDraggable : MonoBehaviour
 {
     [Header("Pastry")]
@@ -27,6 +28,7 @@ public class PastryDraggable : MonoBehaviour
     private bool isDragging;
     private Collider pastryCollider;
 
+    // Save starting positions and rotation so pastry can return
     private void Start()
     {
         startPosition = transform.position;
@@ -45,6 +47,7 @@ public class PastryDraggable : MonoBehaviour
         }
     }
 
+    // Update position and state
     private void Update()
     {
         if (dragCamera == null)
@@ -81,6 +84,7 @@ public class PastryDraggable : MonoBehaviour
         }
     }
 
+    // Checks if mouse clikc hit pastry before drag
     private void TryStartDrag()
     {
         Ray ray = dragCamera.ScreenPointToRay(Input.mousePosition);
@@ -112,6 +116,7 @@ public class PastryDraggable : MonoBehaviour
         Debug.Log("Clicked, but did not hit this pastry. First hit was: " + hits[0].collider.name);
     }
 
+    // Enter dragging state of pastry 
     private void StartDragging()
     {
         isDragging = true;
@@ -166,6 +171,7 @@ public class PastryDraggable : MonoBehaviour
         return dragCamera.ScreenToWorldPoint(mouseScreenPosition);
     }
 
+    // Returns pastry to original position
     public void ResetPastry()
     {
         transform.position = startPosition;

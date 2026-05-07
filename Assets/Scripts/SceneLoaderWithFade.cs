@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Loads scenes with fade out and fade in transition
 public class SceneLoaderWithFade : MonoBehaviour
 {
     public static SceneLoaderWithFade Instance { get; private set; }
@@ -42,6 +43,7 @@ public class SceneLoaderWithFade : MonoBehaviour
         StartCoroutine(LoadSceneRoutine(sceneName));
     }
 
+    // Handles full scene transition sequence
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
         isLoading = true;
@@ -57,6 +59,7 @@ public class SceneLoaderWithFade : MonoBehaviour
         isLoading = false;
     }
 
+    // Fade overlay
     private IEnumerator FadeOut()
     {
         if (fadeCanvasGroup == null)
@@ -78,6 +81,7 @@ public class SceneLoaderWithFade : MonoBehaviour
         fadeCanvasGroup.alpha = 1f;
     }
 
+    // Decrease fade overlay
     private IEnumerator FadeIn()
     {
         if (fadeCanvasGroup == null)

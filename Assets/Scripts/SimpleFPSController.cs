@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// First person controller for moving around cafe for mobile and pc
 public class SimpleFPSController : MonoBehaviour
 {
     public static SimpleFPSController Instance { get; private set; }
@@ -93,6 +95,7 @@ public class SimpleFPSController : MonoBehaviour
         ApplyLook(mouseX, mouseY);
     }
 
+    // Handles mobile touch input for looking around.
     private void HandleMobileLook()
     {
         if (!useMobileTouchLook)
@@ -157,6 +160,7 @@ public class SimpleFPSController : MonoBehaviour
 #endif
     }
 
+    // Applies horizontal and vertical look movement
     private void ApplyLook(float lookX, float lookY)
     {
         xRotation -= lookY;
@@ -187,7 +191,7 @@ public class SimpleFPSController : MonoBehaviour
             }
         }
 #endif
-
+        // Convert input into movement relative to the player's current facing direction
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
         if (move.sqrMagnitude > 1f)
@@ -221,6 +225,7 @@ public class SimpleFPSController : MonoBehaviour
         }
     }
 
+    // Checks whether a mobile touch is currently over a UI object
     private bool IsTouchOverUI(int fingerId)
     {
         if (EventSystem.current == null)

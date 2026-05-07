@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Allows object in scene to load another scene when interacte dwith
 public class ClickableSceneObject : MonoBehaviour
 {
     [Header("Scene")]
@@ -9,6 +10,7 @@ public class ClickableSceneObject : MonoBehaviour
     [Header("Return Position")]
     [SerializeField] private bool savePlayerReturnPosition = true;
 
+    // Load target scene
     public void LoadScene()
     {
         if (savePlayerReturnPosition)
@@ -19,6 +21,7 @@ public class ClickableSceneObject : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    // Finds user and states their current transform data
     private void SavePlayerPosition()
     {
         SimpleFPSController playerController = FindFirstObjectByType<SimpleFPSController>();

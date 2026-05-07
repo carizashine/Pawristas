@@ -1,10 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
+// Spawns finished pastry plate back into cafe scene
 public class CafePastrySpawner : MonoBehaviour
 {
     [Header("Plate")]
     public GameObject platePrefab;
+    // Default location where finished pastry spawns
     public Transform finishedPlateSpawnPoint;
 
     [Header("Pastry Prefabs")]
@@ -14,6 +16,7 @@ public class CafePastrySpawner : MonoBehaviour
     public GameObject oreoCupcakePrefab;
     public GameObject redVelvetCupcakePrefab;
 
+    // Pastry positioning on the plate
     [Header("Pastry Placement On Plate")]
     public Vector3 pastryLocalPosition = new Vector3(0f, 0.12f, 0f);
     public Vector3 pastryLocalRotation = Vector3.zero;
@@ -30,6 +33,7 @@ public class CafePastrySpawner : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource spawnAudio;
 
+    // Run to spawn correct pastry based on player minigame input
     private IEnumerator Start()
     {
         yield return null;
@@ -50,6 +54,7 @@ public class CafePastrySpawner : MonoBehaviour
         SpawnFinishedPastryPlate(result.pastry);
     }
 
+    // Creates a finsihed plate with the correct pastry on
     private void SpawnFinishedPastryPlate(PastryType pastryType)
     {
         if (platePrefab == null)
@@ -69,6 +74,7 @@ public class CafePastrySpawner : MonoBehaviour
         Transform spawnPoint = finishedPlateSpawnPoint;
         bool alreadyPlaced = false;
 
+        // Track pastry placement and return it to new snap point 
         if (OrderProgressTracker.Instance != null &&
             OrderProgressTracker.Instance.HasPlacedPastryOnCounter &&
             counterDropZone != null &&
@@ -113,6 +119,7 @@ public class CafePastrySpawner : MonoBehaviour
             draggable = plate.AddComponent<CafeCupDraggable>();
         }
 
+        // Configure draggable plate as a pastry item
         draggable.itemType = CafeItemType.Pastry;
         draggable.dragCamera = playerCamera != null ? playerCamera : Camera.main;
         draggable.fpsController = fpsController;
@@ -141,6 +148,7 @@ public class CafePastrySpawner : MonoBehaviour
         }
     }
 
+    // Returns the matching prefab for the given pastry type
     private GameObject GetPrefabForPastry(PastryType pastryType)
     {
         switch (pastryType)

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Swpas customer visual model after order is served
 public class CustomerReactionSwap : MonoBehaviour
 {
     [Header("Current Visual")]
@@ -10,11 +11,13 @@ public class CustomerReactionSwap : MonoBehaviour
     [SerializeField] private GameObject happyPrefab;
     [SerializeField] private GameObject sadPrefab;
 
+    // Min score for happy reaction for customer
     [Header("Reaction Settings")]
     [SerializeField] private int happyScoreThreshold = 70;
 
     private GameObject spawnedReactionVisual;
 
+    // Reactions based on a bad or happy final socre
     public void ShowReaction(int score)
     {
         GameObject prefabToSpawn = score >= happyScoreThreshold ? happyPrefab : sadPrefab;
@@ -49,6 +52,7 @@ public class CustomerReactionSwap : MonoBehaviour
         Debug.Log("Customer reaction visual changed. Score: " + score);
     }
 
+    // Removes reaction visual and shows normal idle customer model
     public void ResetToIdle()
     {
         if (spawnedReactionVisual != null)

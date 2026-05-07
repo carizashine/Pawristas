@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+// Makes serving area interactable
 public class ServeOrderInteractable : MonoBehaviour, IInteractable
 {
     [Header("Serving")]
@@ -33,6 +34,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         return "Click to serve order";
     }
 
+    // Called when player interacts with serving area
     public void Interact()
     {
         if (isServing)
@@ -58,6 +60,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         StartCoroutine(ServeRoutine());
     }
 
+    // Scoring, reaction display, cleanup, and next customers
     private IEnumerator ServeRoutine()
     {
         isServing = true;
@@ -93,6 +96,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
             }
         }
 
+        // Optionally ask Gemini to generate a more dynamic customer reaction
         if (useAIReactionDialogue)
         {
             if (geminiDialogueClient == null)
@@ -179,6 +183,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         return null;
     }
 
+    // Backup customer reaction text
     private string GetCustomerReactionText(int finalScore)
     {
         if (finalScore >= 90)
@@ -199,6 +204,7 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
         return "I do not think this is what I ordered.";
     }
 
+    // Builds score breakdown after serve
     private string GetScoreBreakdownText()
     {
         if (GameSessionManager.Instance == null ||
@@ -278,6 +284,8 @@ public class ServeOrderInteractable : MonoBehaviour, IInteractable
 
         Debug.Log(message);
     }
+
+    // Hides reaction panel after delay
     private IEnumerator HideReactionAfterDelay()
     {
         yield return new WaitForSeconds(reactionTime);

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Restores player poistion and rotation when returning to scene
 public class PlayerReturnPositionRestorer : MonoBehaviour
 {
     private void Start()

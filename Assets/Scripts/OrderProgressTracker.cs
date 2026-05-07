@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Tracks progress through the current customer order
 public class OrderProgressTracker : MonoBehaviour
 {
     public static OrderProgressTracker Instance { get; private set; }
@@ -24,6 +25,7 @@ public class OrderProgressTracker : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    // Clears all progress for a new order
     public void ResetProgress()
     {
         HasTakenOrder = false;
@@ -65,6 +67,7 @@ public class OrderProgressTracker : MonoBehaviour
         HasPlacedPastryOnCounter = true;
     }
 
+    // Returns true when all steps for order are complete
     public bool CanGoToRating()
     {
         return HasTakenOrder &&

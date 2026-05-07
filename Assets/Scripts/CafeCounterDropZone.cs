@@ -1,11 +1,14 @@
 using UnityEngine;
 
+// Handles cafe counter where items are ready to be dropped
 public class CafeCounterDropZone : MonoBehaviour
 {
     [Header("Snap Points")]
+    // Position and rotation where finished espresso and pastry should snap too
     public Transform espressoSnapPoint;
     public Transform pastrySnapPoint;
 
+    // How close touch position is to snap point
     [Header("Drop Settings")]
     public float screenAcceptRadius = 200f;
     [Header("Audio")]
@@ -14,11 +17,13 @@ public class CafeCounterDropZone : MonoBehaviour
     private CafeCupDraggable placedEspresso;
     private CafeCupDraggable placedPastry;
 
+    // Checks if one valid item has been placed on counter
     public bool HasPlacedCup()
     {
         return HasPlacedEspresso() || HasPlacedPastry();
     }
 
+    // Checks espresso has been placed tracking placement state globally
     public bool HasPlacedEspresso()
     {
         if (placedEspresso != null)
@@ -27,9 +32,10 @@ public class CafeCounterDropZone : MonoBehaviour
         }
 
         return OrderProgressTracker.Instance != null &&
-               OrderProgressTracker.Instance.HasPlacedEspressoOnCounter;
+                OrderProgressTracker.Instance.HasPlacedEspressoOnCounter;
     }
 
+    // Checks whether pastry has been placed tracking state globally
     public bool HasPlacedPastry()
     {
         if (placedPastry != null)
@@ -41,6 +47,7 @@ public class CafeCounterDropZone : MonoBehaviour
                OrderProgressTracker.Instance.HasPlacedPastryOnCounter;
     }
 
+    // Checks user mouse to see if position is close enough to snap point
     public bool IsMouseOverDropZone(Camera cam, Vector2 mousePosition, CafeItemType itemType)
     {
         if (cam == null)
@@ -57,6 +64,7 @@ public class CafeCounterDropZone : MonoBehaviour
             return false;
         }
 
+        // Convert snap point position into a screen position
         Vector3 screenPoint = cam.WorldToScreenPoint(target.position);
 
         float distance = Vector2.Distance(
@@ -69,6 +77,7 @@ public class CafeCounterDropZone : MonoBehaviour
         return distance <= screenAcceptRadius;
     }
 
+    // Snaps cup into place, registers it, and updates
     public void ReceiveCup(CafeCupDraggable item)
     {
         if (item == null)
@@ -94,6 +103,7 @@ public class CafeCounterDropZone : MonoBehaviour
             placeAudio.Play();
         }
 
+        // Update global order progress to other scripts
         if (item.itemType == CafeItemType.Espresso)
         {
             if (OrderProgressTracker.Instance != null)
@@ -112,6 +122,7 @@ public class CafeCounterDropZone : MonoBehaviour
         Debug.Log(item.itemType + " snapped to pickup counter.");
     }
 
+    // Stores placed item in correct local variable
     public void RegisterPlacedItem(CafeCupDraggable item)
     {
         if (item == null)
@@ -129,6 +140,7 @@ public class CafeCounterDropZone : MonoBehaviour
         }
     }
 
+    // Returns snap point for different item type
     public Transform GetSnapPoint(CafeItemType itemType)
     {
         switch (itemType)
@@ -144,6 +156,7 @@ public class CafeCounterDropZone : MonoBehaviour
         }
     }
 
+    // Removes placed items from the counter
     public void ClearPlacedItems()
     {
         if (placedEspresso != null)
@@ -159,6 +172,7 @@ public class CafeCounterDropZone : MonoBehaviour
         }
     }
 
+    // Clears all placed items
     public void ClearPlacedCup()
     {
         ClearPlacedItems();

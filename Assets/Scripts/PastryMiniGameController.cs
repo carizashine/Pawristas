@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+// Control pastry minigmae flow
 public class PastryMinigameController : MonoBehaviour
 {
     [Header("Selected Pastry")]
@@ -18,6 +19,7 @@ public class PastryMinigameController : MonoBehaviour
     private bool pastryComplete = false;
     private bool isFinishing = false;
 
+    // Starting selection for pastry state and instructions for user
     private void Start()
     {
         if (instructionText != null)
@@ -33,6 +35,7 @@ public class PastryMinigameController : MonoBehaviour
         UpdateUI();
     }
 
+    // Called when user selects or place pastry
     public void SelectPastry(PastryType pastry)
     {
         if (pastryComplete || isFinishing)
@@ -62,6 +65,7 @@ public class PastryMinigameController : MonoBehaviour
         FinishPastryMinigame();
     }
 
+    // SAves pastry result, updates progress, and returns back
     private void FinishPastryMinigame()
     {
         float qualityScore = 1f;
@@ -102,6 +106,7 @@ public class PastryMinigameController : MonoBehaviour
         }
     }
 
+    // Converts the pastrytype enum to display name
     private string GetPastryDisplayName(PastryType pastry)
     {
         switch (pastry)

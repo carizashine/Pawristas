@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Handles creating and removing customer in the cafe
 public class CustomerSpawner : MonoBehaviour
 {
     public static CustomerSpawner Instance { get; private set; }
@@ -25,6 +26,7 @@ public class CustomerSpawner : MonoBehaviour
         SpawnCustomerIfNone();
     }
 
+    // Creates customer if none
     public void SpawnCustomerIfNone()
     {
         if (currentCustomer != null)
@@ -36,6 +38,7 @@ public class CustomerSpawner : MonoBehaviour
         SpawnRandomCustomer();
     }
 
+    // Chooses random customer prefab
     public void SpawnRandomCustomer()
     {
         if (customerPrefabs == null || customerPrefabs.Length == 0)
@@ -67,6 +70,7 @@ public class CustomerSpawner : MonoBehaviour
             " at position " + currentCustomer.transform.position
         );
 
+        // Customer should have a interactable script
         CustomerInteractable interactable = currentCustomer.GetComponent<CustomerInteractable>();
 
         if (interactable == null)
@@ -92,6 +96,7 @@ public class CustomerSpawner : MonoBehaviour
         }
     }
 
+    // Removes active customer from scene
     public void RemoveCurrentCustomer()
     {
         if (currentCustomer != null)

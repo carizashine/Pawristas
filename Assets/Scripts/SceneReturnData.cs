@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Stores player position and rotation before switching scenes
 public static class SceneReturnData
 {
     public static bool HasReturnPosition { get; private set; }

@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Allows cafe items to be draggable with user input
 public class CafeCupDraggable : MonoBehaviour
 {
     public static bool IsDraggingAnyCafeItem { get; private set; }
 
     [Header("Item")]
+    // Tracks current state of cafe item to see if its getting dragged or not
     public CafeItemType itemType = CafeItemType.Espresso;
 
     [Header("References")]
@@ -25,10 +27,12 @@ public class CafeCupDraggable : MonoBehaviour
     private Vector3 startPosition;
     private Quaternion startRotation;
 
+    // Current drag and offset data
     private Vector3 targetPosition;
     private Vector3 offset;
     private float screenDepth;
 
+    // Variables for current state
     private bool isDragging;
     private bool isPlaced;
 
@@ -38,6 +42,7 @@ public class CafeCupDraggable : MonoBehaviour
 
     [SerializeField] private AudioSource pickupAudio;
 
+    // Save starting positions and rotations for items to move
     private void Start()
     {
         startPosition = transform.position;
@@ -63,11 +68,12 @@ public class CafeCupDraggable : MonoBehaviour
             }
         }
 
-#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
-        HandleTouchInput();
-#else
-        HandleMouseInput();
-#endif
+        // Touch controls for mobile and pc
+        #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
+                HandleTouchInput();
+        #else
+                HandleMouseInput();
+        #endif
     }
 
     private void LateUpdate()
@@ -82,6 +88,7 @@ public class CafeCupDraggable : MonoBehaviour
         }
     }
 
+    // Handle drag behaviors for mouse input
     private void HandleMouseInput()
     {
         if (Input.GetMouseButtonDown(0))
@@ -100,6 +107,7 @@ public class CafeCupDraggable : MonoBehaviour
         }
     }
 
+    // Handles drag behavior for mobile
     private void HandleTouchInput()
     {
         if (isDragging)
@@ -157,6 +165,7 @@ public class CafeCupDraggable : MonoBehaviour
         }
     }
 
+    // Tracks dragging items from a mouse or touch position
     private bool TryStartDrag(Vector2 screenPosition, int touchId, bool isMobileTouch)
     {
         if (isPlaced)
@@ -173,6 +182,7 @@ public class CafeCupDraggable : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~0, QueryTriggerInteraction.Ignore))
         {
+            // Start dragging only if the ray hit this object
             if (hit.collider == cupCollider || hit.collider.transform.IsChildOf(transform))
             {
                 isDragging = true;
@@ -207,6 +217,7 @@ public class CafeCupDraggable : MonoBehaviour
         return false;
     }
 
+    // Updates where item should move while dragged
     private void UpdateTargetPosition(Vector2 screenPosition)
     {
         targetPosition = GetPointerWorldPosition(screenPosition) + offset;
@@ -260,6 +271,7 @@ public class CafeCupDraggable : MonoBehaviour
         return dragCamera.ScreenToWorldPoint(pointerScreenPosition);
     }
 
+    // Send item back to original position
     private void ResetCup()
     {
         transform.position = startPosition;

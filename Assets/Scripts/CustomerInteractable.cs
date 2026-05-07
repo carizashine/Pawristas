@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+// Makes customer object interactable so user cna take orders
 public class CustomerInteractable : MonoBehaviour, IInteractable
 {
     [Header("Interaction")]
@@ -10,6 +11,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
     [SerializeField] private OrderDisplayUI orderDisplayUI;
 
     [Header("Gemini Dialogue")]
+    // AI dialogue client to generate customer text
     [SerializeField] private GeminiDialogueClient geminiDialogueClient;
     [SerializeField] private bool useAIOrderDialogue = true;
 
@@ -18,6 +20,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
 
     private bool isOpeningOrder;
 
+    // Allows other script to assign the order UI reference
     public void SetOrderDisplayUI(OrderDisplayUI ui)
     {
         orderDisplayUI = ui;
@@ -38,6 +41,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
         StartCoroutine(OpenOrderRoutine());
     }
 
+    // Handles full order opening process
     private IEnumerator OpenOrderRoutine()
     {
         isOpeningOrder = true;
@@ -56,6 +60,7 @@ public class CustomerInteractable : MonoBehaviour, IInteractable
 
         Order currentOrder = GameSessionManager.Instance.CurrentOrder;
 
+        // AI customer dialogue only if enabled
         if (useAIOrderDialogue &&
             currentOrder != null &&
             string.IsNullOrWhiteSpace(currentOrder.customerOrderDialogue))

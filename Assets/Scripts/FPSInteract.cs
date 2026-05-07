@@ -2,6 +2,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Handles first person interaction and lets player use mobile and pc inputs
 public class FPSInteract : MonoBehaviour
 {
     [Header("Interaction")]
@@ -97,6 +98,7 @@ public class FPSInteract : MonoBehaviour
         }
     }
 
+    // Casts a ray to check whether the player is looking at an interactable
     private void CheckForTarget()
     {
         ClearCurrentTarget();
@@ -151,6 +153,7 @@ public class FPSInteract : MonoBehaviour
         HidePrompt();
     }
 
+    // Searches the hit object and its parents
     private IInteractable FindInteractableFromHit(Collider hitCollider)
     {
         if (hitCollider == null)
@@ -229,6 +232,7 @@ public class FPSInteract : MonoBehaviour
         }
     }
 
+    // Use reflection to check is component has a LoadScene method
     private bool TrySetLoadSceneTarget(MonoBehaviour behaviour)
     {
         if (behaviour == null)
@@ -256,6 +260,7 @@ public class FPSInteract : MonoBehaviour
         return true;
     }
 
+    // Check if user pressed interaction in the frame
     private bool PressedInteract()
     {
         if (Time.time < canInteractTime)
@@ -386,6 +391,7 @@ public class FPSInteract : MonoBehaviour
     }
 #endif
 
+    // Performs interaction with whichever valid target is currently selected
     private void TryInteract()
     {
         if (currentInteractable != null)
@@ -420,6 +426,7 @@ public class FPSInteract : MonoBehaviour
         }
     }
 
+    // Clears the corrently detected interaction target
     private void ClearCurrentTarget()
     {
         currentInteractable = null;
