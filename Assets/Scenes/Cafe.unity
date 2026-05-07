@@ -513,7 +513,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
@@ -5868,13 +5868,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4842959095085012947, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
       insertIndex: -1
       addedObject: {fileID: 638741019}
+    - targetCorrespondingSourceObject: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 638741022}
+    - targetCorrespondingSourceObject: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 638741021}
+    - targetCorrespondingSourceObject: {fileID: 4850591416543999521, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 638741020}
   m_SourcePrefab: {fileID: 100100000, guid: f38a7aa92864c0a4c9b85b17d68b01de, type: 3}
 --- !u!1 &638741014 stripped
 GameObject:
@@ -5978,6 +5988,76 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &638741020
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638741014}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!65 &638741021
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638741014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.46378905, y: 0.044272307, z: 0.46378905}
+  m_Center: {x: -0.0000048801303, y: 0.02206642, z: 0}
+--- !u!114 &638741022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638741014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a49a689b40aaf492ca4917c240b902f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemType: 1
+  dragCamera: {fileID: 76667496}
+  fpsController: {fileID: 0}
+  dropZone: {fileID: 509060547}
+  syrupStation: {fileID: 0}
+  dragSmoothness: 10
+  collideWhileDragging: 1
+  collisionSkin: 0.03
+  disablePlayerMovementWhileDragging: 0
+  pickupAudio: {fileID: 0}
 --- !u!1001 &645995360
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7251,10 +7331,10 @@ PrefabInstance:
       addedObject: {fileID: 871031400}
     - targetCorrespondingSourceObject: {fileID: 1246674552413394, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 871031402}
+      addedObject: {fileID: 871031405}
     - targetCorrespondingSourceObject: {fileID: 1246674552413394, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 871031403}
+      addedObject: {fileID: 871031406}
   m_SourcePrefab: {fileID: 100100000, guid: 2dd019f1380a8464da36c528baec5b4c, type: 3}
 --- !u!1 &871031395 stripped
 GameObject:
@@ -7279,6 +7359,8 @@ MonoBehaviour:
   dropZone: {fileID: 509060547}
   syrupStation: {fileID: 0}
   dragSmoothness: 25
+  collideWhileDragging: 1
+  collisionSkin: 0.03
   disablePlayerMovementWhileDragging: 0
   pickupAudio: {fileID: 871031400}
 --- !u!82 &871031400
@@ -7378,8 +7460,8 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!64 &871031402
-MeshCollider:
+--- !u!65 &871031405
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -7396,11 +7478,10 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
---- !u!54 &871031403
+  serializedVersion: 3
+  m_Size: {x: 0.2, y: 0.15, z: 0.2}
+  m_Center: {x: 0, y: 0.07, z: 0}
+--- !u!54 &871031406
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7424,7 +7505,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 3
 --- !u!1 &875534864
@@ -17435,7 +17516,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1912362778220159713, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
       propertyPath: mobileLookSensitivity
-      value: 0.25
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3056438790279700698, guid: efc2438e8ec7bba41af30d157b587eb0, type: 3}
       propertyPath: m_Name

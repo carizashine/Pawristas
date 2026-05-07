@@ -17,7 +17,11 @@ public class CafeCupDraggable : MonoBehaviour
     public SyrupStationDropZone syrupStation;
 
     [Header("Drag Settings")]
-    public float dragSmoothness = 25f;
+    public float dragSmoothness = 10f;
+
+    [Header("Collision While Dragging")]
+    [SerializeField] private bool collideWhileDragging = true;
+    [SerializeField] private float collisionSkin = 0.03f;
 
     [Header("Player Movement")]
     public bool disablePlayerMovementWhileDragging = false;
@@ -35,6 +39,7 @@ public class CafeCupDraggable : MonoBehaviour
     private int activeTouchId = -1;
 
     private Collider cupCollider;
+    private Rigidbody cupRigidbody;
 
     [SerializeField] private AudioSource pickupAudio;
 
@@ -44,10 +49,41 @@ public class CafeCupDraggable : MonoBehaviour
         startRotation = transform.rotation;
 
         cupCollider = GetComponent<Collider>();
+        cupRigidbody = GetComponent<Rigidbody>();
 
         if (dragCamera == null)
         {
             dragCamera = Camera.main;
+        }
+
+        if (cupCollider == null)
+        {
+            Debug.LogWarning(name + " needs a Collider to be draggable and collide.");
+        }
+
+        SetupRigidbodyForDragging();
+    }
+
+    private void SetupRigidbodyForDragging()
+    {
+        if (!collideWhileDragging)
+        {
+            return;
+        }
+
+        if (cupRigidbody == null)
+        {
+            cupRigidbody = gameObject.AddComponent<Rigidbody>();
+        }
+
+        cupRigidbody.useGravity = false;
+        cupRigidbody.isKinematic = true;
+        cupRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        cupRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+
+        if (cupCollider != null && cupCollider.isTrigger)
+        {
+            Debug.LogWarning(name + " collider is set to Is Trigger. Uncheck Is Trigger if you want it to collide while dragging.");
         }
     }
 
@@ -72,14 +108,59 @@ public class CafeCupDraggable : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isDragging)
+        if (!isDragging)
         {
-            transform.position = Vector3.Lerp(
-                transform.position,
-                targetPosition,
-                dragSmoothness * Time.deltaTime
-            );
+            return;
         }
+
+        Vector3 desiredPosition = Vector3.Lerp(
+            transform.position,
+            targetPosition,
+            dragSmoothness * Time.deltaTime
+        );
+
+        MoveWithCollision(desiredPosition);
+    }
+
+    private void MoveWithCollision(Vector3 desiredPosition)
+    {
+        if (!collideWhileDragging || cupRigidbody == null || cupCollider == null || cupCollider.isTrigger)
+        {
+            transform.position = desiredPosition;
+            return;
+        }
+
+        Vector3 currentPosition = transform.position;
+        Vector3 delta = desiredPosition - currentPosition;
+
+        float distance = delta.magnitude;
+
+        if (distance <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 direction = delta / distance;
+
+        bool hitSomething = cupRigidbody.SweepTest(
+            direction,
+            out RaycastHit hit,
+            distance + collisionSkin,
+            QueryTriggerInteraction.Ignore
+        );
+
+        if (hitSomething)
+        {
+            float safeDistance = Mathf.Max(0f, hit.distance - collisionSkin);
+            Vector3 safePosition = currentPosition + direction * safeDistance;
+
+            cupRigidbody.position = safePosition;
+            transform.position = safePosition;
+            return;
+        }
+
+        cupRigidbody.position = desiredPosition;
+        transform.position = desiredPosition;
     }
 
     private void HandleMouseInput()
@@ -218,7 +299,6 @@ public class CafeCupDraggable : MonoBehaviour
         IsDraggingAnyCafeItem = false;
         activeTouchId = -1;
 
-        // 1) Check the syrup station first (espresso cups only).
         bool syrupStationReceived = false;
 
         if (syrupStation != null &&
@@ -229,7 +309,6 @@ public class CafeCupDraggable : MonoBehaviour
             syrupStationReceived = true;
         }
 
-        // 2) Otherwise check the pickup counter.
         if (!syrupStationReceived)
         {
             if (dropZone != null &&
@@ -262,12 +341,24 @@ public class CafeCupDraggable : MonoBehaviour
 
     private void ResetCup()
     {
+        if (cupRigidbody != null)
+        {
+            cupRigidbody.position = startPosition;
+            cupRigidbody.rotation = startRotation;
+        }
+
         transform.position = startPosition;
         transform.rotation = startRotation;
     }
 
     public void SnapToCounter(Vector3 position, Quaternion rotation)
     {
+        if (cupRigidbody != null)
+        {
+            cupRigidbody.position = position;
+            cupRigidbody.rotation = rotation;
+        }
+
         transform.position = position;
         transform.rotation = rotation;
     }
