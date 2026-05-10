@@ -19,3 +19,5 @@ Darren Nguyen: Game Developer with Emphasis on Generative AI
 <br>
 
 To enhance player experience, generative AI will be implemented for complex dialogue and interactions between player and customers. This also differentiates customers from each other and adds variety to gameplay. This game will be deployed as a stand-alone mobile app, implementing different touch-based controls. Stretch goals include custom shaders to ingredients. 
+
+Video of our game: https://drive.google.com/file/d/1m5aleRqSMb2VRCHt3cWqTS4s3ensP1pk/view?pli=1
